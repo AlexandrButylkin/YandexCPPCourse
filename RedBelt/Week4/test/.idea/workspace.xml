@@ -9,7 +9,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="202253f1-187b-40ce-ac2f-b37f4ba32e60" name="Changes" comment="" />
+    <list default="true" id="202253f1-187b-40ce-ac2f-b37f4ba32e60" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../Week1/4_BadMacros/BadMacros.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Week1/4_BadMacros/BadMacros.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,7 +60,7 @@
       <option name="presentableId" value="Default" />
       <updated>1641913999093</updated>
       <workItem from="1641914000633" duration="578000" />
-      <workItem from="1645726161526" duration="1684000" />
+      <workItem from="1645726161526" duration="1998000" />
     </task>
     <servers />
   </component>
