@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/cobak/CLionProjects/YandexCPlusPlus/brown_belt/week_5/task_10(PersonalBudgetProfessionalMobileLegacyVersion)/main.cpp
+array
+-
+cassert
+-
+cstdlib
+-
+ctime
+-
+iostream
+-
+optional
+-
+sstream
+-
+stdexcept
+-
+string_view
+-
+utility
+-
+
