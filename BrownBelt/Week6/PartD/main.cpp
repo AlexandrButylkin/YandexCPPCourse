@@ -3,7 +3,6 @@
 
 
 #include "Parser.h"
-#include "json.h"
 
 template <typename T>
 void PrintVector(const std::vector<T>& vec){
@@ -70,8 +69,9 @@ void TestStopsFromString() {
 
 void TestAll(){
     Manager manager;
-    manager.AddRequests();
-    manager.ProcessRequests();
+    manager.ParseAllRequestJSON();
+    manager.ProcessAllInputRequest();
+    manager.ProcessAllOutputRequestJSON();
 }
 
 int main() {
@@ -79,13 +79,17 @@ int main() {
     TestDoubleFromString();
     TestStopsFromString();*/
     //TestParse();
-    //TestAll();
-    std::ifstream file("D:\\json.txt");
-    Json::Document document = Json::Load(file);
-    auto a = document.GetRoot().AsInt();
-    auto b = document.GetRoot().AsString();
-    auto c = document.GetRoot().AsMap();
-    auto d = document.GetRoot().AsArray();
-    std::cout << std::endl;
+    TestAll();
+    /*std::ifstream file("D:\\json.json");
+    auto document = Json::Load(file);
+    auto a = document.GetRoot().AsMap();
+    auto a1 = a.at("base_requests");
+    auto a11 = a.at("stat_requests");
+    auto a2 = a1.AsArray();
+    auto a3 = a2[0];
+    auto a4 = a3.AsMap();
+    auto a5 = a4["type"];
+    auto a6 = a5.AsString();
+    std::cout << std::endl;*/
     return 0;
 }

@@ -2,6 +2,7 @@
 #include <exception>
 
 #include "Parser.h"
+#include "json.h"
 
 
 using std::string_view;
@@ -77,10 +78,109 @@ std::pair<Route::RouteType, std::vector<std::string>> StopsFromString(std::strin
             result};
 }
 
-std::optional<Request::RequestType> TypeRequestFromString(std::string_view str){
+std::optional<Request::RequestType> GetTypeRequest(std::string_view str){
     if(str == "Stop"){
         return Request::RequestType::STOP;
     } else if (str == "Bus"){
         return Request::RequestType::BUS;
     } else return std::nullopt;
 }
+
+std::unique_ptr<Request> Manager::AddCurrentStringRequest(std::string_view request_str, Request::IOType io_type) {
+    const auto type_request = GetTypeRequest(ReadWord(request_str));
+
+    if (!type_request) {
+        return nullptr;
+    }
+    auto request = Request::Create(io_type, type_request.value());
+
+    if(request){
+        request->ParseFromString(request_str);
+    }
+    return request;
+}
+
+std::unique_ptr<Request> Manager::AddCurrentJSONRequest(const Json::Node &node, Request::IOType io_type) {
+    const auto type_request = GetTypeRequest(node.AsMap().at("type").AsString());
+    if(!type_request){
+        return nullptr;
+    }
+    auto request = Request::Create(io_type, type_request.value());
+
+    if(request){
+        request->ParseFromJSON(node);
+    }
+    return request;
+}
+
+void Manager::ParseAllRequestString() {
+    const auto num_request_input = ReadCountRequests(is_);
+    requests_input_.reserve(num_request_input);
+
+    for (size_t i = 0; i < num_request_input; ++i) {
+        std::string request_str;
+        std::getline(is_, request_str);
+        requests_input_.emplace_back(AddCurrentStringRequest(request_str));
+    }
+
+    const auto num_request_output = ReadCountRequests(is_);
+    request_output_.reserve(num_request_output);
+
+    for(size_t i = 0; i < num_request_output; ++i){
+        std::string request_str;
+        std::getline(is_, request_str);
+        request_output_.emplace_back(AddCurrentStringRequest(request_str, Request::IOType::OUTPUT));
+    }
+}
+
+void Manager::ParseAllRequestJSON() {
+    auto document = Json::Load(is_);
+
+    auto base_requests = document.GetRoot().AsMap().at(BASE_REQUESTS);
+    for(auto& item : base_requests.AsArray()){
+        requests_input_.push_back(AddCurrentJSONRequest(item));
+    }
+    auto stat_requests = document.GetRoot().AsMap().at(STAT_REQUESTS);
+    for(auto& item : stat_requests.AsArray()){
+        request_output_.push_back(AddCurrentJSONRequest(item, Request::IOType::OUTPUT));
+    }
+}
+
+void Manager::ProcessAllInputRequest() {
+    for(auto& item : requests_input_){
+        dynamic_cast<InputRequest&>(*item).Process(database);
+    }
+}
+
+void Manager::ProcessAllOutputRequestString() {
+    for(auto& item : request_output_){
+
+        if(item->GetRequestType() == Request::RequestType::STOP){
+            auto& OutputRequestItem = dynamic_cast<OutputRequest<StopData>&>(*item);
+            const auto data = OutputRequestItem.Process(database);
+            os_ << data.ToString();
+        } else {
+            auto& OutputRequestItem = dynamic_cast<OutputRequest<BusData>&>(*item);
+            const auto data = OutputRequestItem.Process(database);
+            os_ << data.ToString();
+        }
+    }
+}
+
+void Manager::ProcessAllOutputRequestJSON() {
+    std::vector<Json::Node> result;
+    for(auto& item : request_output_){
+        if(item->GetRequestType() == Request::RequestType::STOP){
+            auto& OutputRequestItem = dynamic_cast<OutputRequest<StopData>&>(*item);
+            auto data = OutputRequestItem.Process(database);
+            result.push_back(data.ToJSON());
+        } else {
+            auto& OutputRequestItem = dynamic_cast<OutputRequest<BusData>&>(*item);
+            auto data = OutputRequestItem.Process(database);
+            result.push_back(data.ToJSON());
+        }
+    }
+    Json::PrintNode(Json::Node(result), os_);
+}
+
+

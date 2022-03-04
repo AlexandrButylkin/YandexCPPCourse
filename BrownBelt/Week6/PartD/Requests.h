@@ -8,78 +8,156 @@
 #include <iostream>
 
 #include "Database.h"
+#include "json.h"
 
 class Request {
 public:
+
+    enum class IOType{
+        INPUT,
+        OUTPUT
+    };
+
     enum class RequestType{
         STOP,
         BUS
     };
-    explicit Request(RequestType type) : type_(type) {}
-    static std::unique_ptr<Request> Create(RequestType type, bool is_input = true);
 
-    virtual void Parse(std::string_view) = 0;
-    virtual void Process(Database& db) = 0;
+    RequestType GetRequestType() const {
+        return request_type_;
+    }
+
+public:
+
+    Request(IOType io_type, RequestType request_type) : io_type_(io_type), request_type_(request_type) {}
+    static std::unique_ptr<Request> Create(IOType io_type, RequestType request_type);
+
+    virtual void ParseFromString(std::string_view) = 0;
+    virtual void ParseFromJSON(const Json::Node& node) = 0;
 
     virtual ~Request() = default;
+
+
+
 private:
-    const RequestType type_;
+
+    const IOType io_type_;
+    const RequestType request_type_;
+
 };
 
-class RequestStop : public Request{
+class InputRequest : public Request {
 public:
-    RequestStop() : Request(RequestType::STOP) {}
-protected:
-    std::string name_;
+
+    InputRequest(RequestType type) : Request(IOType::INPUT, type) {}
+    void ParseFromString(std::string_view) override = 0;
+    void ParseFromJSON(const Json::Node &node) override = 0;
+    virtual void Process(Database& db) = 0;
+
 };
 
-class StopInput : public RequestStop {
+class StopInputRequest : public InputRequest {
 public:
-    StopInput() : RequestStop() {}
-    void Parse(std::string_view str) override;
+
+    StopInputRequest() : InputRequest(RequestType::STOP) {}
+    void ParseFromString(std::string_view) override;
+    void ParseFromJSON(const Json::Node& node) override;
     void Process(Database& db) override;
-public:
+
+private:
+    std::string name_;
     double latitude_;
     double longitude_;
     std::unordered_map<std::string, size_t> distance_to_stops_;
+
 };
 
-class StopOutput : public RequestStop {
+class BusInputRequest : public InputRequest {
 public:
-    StopOutput() : RequestStop() {}
-    void Parse(std::string_view str) override;
+
+    BusInputRequest() : InputRequest(RequestType::BUS) {}
+    void ParseFromString(std::string_view) override;
+    void ParseFromJSON(const Json::Node& node) override;
     void Process(Database& db) override;
-private:
-    void PrintResult(const std::shared_ptr<Stop>& stop, std::ostream& os = std::cout) const;
-};
 
-class RequestBus : public Request{
-public:
-    RequestBus() : Request(RequestType::BUS) {}
-protected:
+private:
     std::string number_;
-};
-
-
-class BusInput : public RequestBus{
-public:
-    BusInput() : RequestBus() {}
-    void Parse(std::string_view str) override;
-    void Process(Database& db) override;
-
-private:
     Route::RouteType route_type_;
     std::vector<std::string> stops_;
 };
 
-class BusOutput : public RequestBus{
+template<typename T>
+class OutputRequest : public Request {
 public:
-    BusOutput() : RequestBus() {}
-    void Parse(std::string_view str) override;
-    void Process(Database& db) override;
+
+    OutputRequest(RequestType type) : Request(IOType::INPUT, type) {}
+    virtual T Process(Database& db) = 0;
+    void ParseFromString(std::string_view) override = 0;
+    void ParseFromJSON(const Json::Node &node) override = 0;
+
+/*    virtual std::string PrintString(std::ostream& os) = 0;
+    virtual Json::Node PrintJSON() = 0;*/
+
+protected:
+    int request_id_;
+};
+
+struct StopData{
+    int request_id = -1;
+    std::string name;
+    bool is_error = true;
+    std::vector<std::string> routes;
+
+    std::string ToString() const;
+    Json::Node ToJSON() const;
+};
+
+
+
+struct BusData{
+    int request_id = -1;
+    std::string number;
+    bool is_error = true;
+    double length = 0.0;
+    double real_length = 0.0;
+    size_t stops_count = 0;
+    size_t unique_stops_count = 0;
+
+    std::string ToString() const;
+    Json::Node ToJSON() const;
+};
+
+class StopOutputRequest : public OutputRequest<StopData> {
+public:
+
+    StopOutputRequest() : OutputRequest(RequestType::STOP) {}
+    void ParseFromString(std::string_view) override;
+    void ParseFromJSON(const Json::Node& node) override;
+    StopData Process(Database& db) override;
+
+/*    std::string PrintString(std::ostream& os) override;
+    Json::Node PrintJSON() override;*/
 
 private:
-    void PrintResult(const std::shared_ptr<Route>& route, std::ostream& os = std::cout) const;
+    std::string name_;
+};
+
+
+class BusOutputRequest : public OutputRequest<BusData> {
+public:
+
+    BusOutputRequest() : OutputRequest(RequestType::BUS) {}
+    void ParseFromString(std::string_view) override;
+    void ParseFromJSON(const Json::Node& node) override;
+    BusData Process(Database& db) override;
+
+    /*std::string PrintString(std::ostream& os) override;
+    Json::Node PrintJSON() override;*/
+
+private:
+
+    std::string number_;
+
 };
 
 

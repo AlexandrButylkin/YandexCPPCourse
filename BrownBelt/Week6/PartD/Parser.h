@@ -8,9 +8,12 @@
 #include "Requests.h"
 #include "Database.h"
 
+static const std::string BASE_REQUESTS = "base_requests";
+static const std::string STAT_REQUESTS = "stat_requests";
+
+
 double DoubleFromString(std::string_view str);
 size_t IntFromString(std::string_view str);
-std::optional<Request::RequestType> TypeRequestFromString(std::string_view str);
 
 size_t ReadCountRequests(std::istream &is);
 
@@ -21,68 +24,36 @@ std::string_view ReadWord(std::string_view &str, std::string_view delimiter = " 
 std::string_view InitDelimit(std::string_view &str);
 std::pair<Route::RouteType, std::vector<std::string>> StopsFromString(std::string_view &str);
 
+std::optional<Request::RequestType> GetTypeRequest(std::string_view str);
 
-//template<typename PTR, typename DB>
+
+
 class Manager {
 public:
-    explicit Manager(std::istream &is = std::cin) : is_(is), database(Database()) {}
+    explicit Manager(std::istream &is = std::cin, std::ostream& os = std::cout) : is_(is), os_(os), database(Database()) {}
 
-    void AddRequests() {
-        //bool flag = false;
-        std::cerr << "AddRequest" << std::endl;
-        const auto num_request_input = ReadCountRequests(is_);
-        requests_input_.reserve(num_request_input);
-        std::cerr << num_request_input << std::endl;
-
-        for (size_t i = 0; i < num_request_input; ++i) {
-            std::string request_str;
-            std::getline(is_, request_str);
-            std ::cerr << request_str << std:: endl;
-            requests_input_.emplace_back(AddCurrentRequest(request_str));
-        }
-
-        const auto num_request_output = ReadCountRequests(is_);
-        request_output_.reserve(num_request_output);
-        std::cerr << num_request_output << std::endl;
-
-        for(size_t i = 0; i < num_request_output; ++i){
-            std::string request_str;
-            std::getline(is_, request_str);
-            std ::cerr << request_str << std:: endl;
-            request_output_.emplace_back(AddCurrentRequest(request_str, false));
-        }
-        /*if(flag) {
-            throw std::invalid_argument("kee");
-        }*/
-    }
-
-    void ProcessRequests(){
-        for(auto& item : requests_input_){
-            item->Process(database);
-        }
-        for(auto& item : request_output_){
-            item->Process(database);
-        }
-    }
+    void ParseAllRequestString();
+    void ProcessAllOutputRequestString();
+    void ParseAllRequestJSON();
+    void ProcessAllOutputRequestJSON();
+    void ProcessAllInputRequest();
 
 private:
-    static std::unique_ptr<Request> AddCurrentRequest(std::string_view request_str, bool is_input = true) {
-        const auto type_request = TypeRequestFromString(ReadWord(request_str));
-        if (!type_request) {
-            return nullptr;
-        }
-        auto request = Request::Create(type_request.value(), is_input);
-        if(request){
-            request->Parse(request_str);
-        }
-        return request;
-    }
 
+    static std::unique_ptr<Request> AddCurrentStringRequest(std::string_view request_str, Request::IOType io_type = Request::IOType::INPUT);
+    static std::unique_ptr<Request> AddCurrentJSONRequest(const Json::Node & node, Request::IOType io_type = Request::IOType::INPUT);
+
+private:
 
     std::istream &is_;
+    std::ostream &os_;
+
+private:
+
     Database database;
     std::vector<std::unique_ptr<Request>> requests_input_;
     std::vector<std::unique_ptr<Request>> request_output_;
+
 };
 
 

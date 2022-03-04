@@ -4,15 +4,6 @@ using namespace std;
 
 namespace Json {
 
-    Document::Document(Node root) : root(move(root)) {
-    }
-
-    const Node& Document::GetRoot() const {
-        return root;
-    }
-
-    Node LoadNode(istream& input);
-
     Node LoadArray(istream& input) {
         vector<Node> result;
 
@@ -26,13 +17,31 @@ namespace Json {
         return Node(move(result));
     }
 
-    Node LoadInt(istream& input) {
-        int result = 0;
-        while (isdigit(input.peek())) {
-            result *= 10;
-            result += input.get() - '0';
+    Node LoadNumber(istream& input) {
+        int i_result = 0;
+        while(isdigit(input.peek())){
+            i_result *= 10;
+            i_result += input.get() - '0';
         }
-        return Node(result);
+        if(input.peek() == '.'){
+            input.get();
+            double d_result = i_result;
+            double multiplier = 0.1;
+            while(isdigit(input.peek())){
+                d_result += multiplier * (input.get() - '0');
+                multiplier /= 10;
+            }
+            return Node(d_result);
+        } else return Node(i_result);
+    }
+
+    Node LoadBool(istream& input){
+        std::string result;
+        result.reserve(5);
+        while(isalpha(input.peek())){
+            result.push_back(input.get());
+        }
+        return Node(result == "true");
     }
 
     Node LoadString(istream& input) {
@@ -67,9 +76,12 @@ namespace Json {
             return LoadDict(input);
         } else if (c == '"') {
             return LoadString(input);
+        } else if(c == 't' || c == 'f') {
+            input.putback(c);
+            return LoadBool(input);
         } else {
             input.putback(c);
-            return LoadInt(input);
+            return LoadNumber(input);
         }
     }
 
@@ -77,4 +89,45 @@ namespace Json {
         return Document{LoadNode(input)};
     }
 
+    void PrintNode(const Json::Node& node, std::ostream& output) {
+        visit([&output](const auto& value) { PrintValue(value, output); },
+              node.GetBase());
+    }
+
+    template<>
+    void PrintValue<std::string>(const std::string& string, std::ostream& os){
+        os << '"' << string << '"';
+    }
+
+    template<>
+    void PrintValue<std::vector<Node>>(const std::vector<Node>& nodes, std::ostream& os){
+        os << '[';
+        bool first = true;
+        for(const Node& node : nodes){
+            if(!first) os << ", ";
+            first = false;
+            PrintNode(node, os);
+        }
+        os << ']';
+    }
+
+    template<>
+    void PrintValue<std::map<std::string, Node>>(const std::map<std::string, Node>& nodes, std::ostream& os){
+        os << '{';
+        bool first = true;
+        for (const auto& [key, node]: nodes) {
+            if (!first) os << ", ";
+            first = false;
+            PrintValue(key, os);
+            os << ": ";
+            PrintNode(node, os);
+        }
+        os << '}';
+    }
+
+    template <>
+    void PrintValue<bool>(const bool& value, std::ostream& output) {
+        output << std::boolalpha << value;
+    }
 }
+
