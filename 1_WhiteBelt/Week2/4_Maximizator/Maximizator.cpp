@@ -1,7 +1,7 @@
 #include <iostream>
 
-void UpdateIfGreater(int a, int& b){
-    if(a >= b) b = a;
+void UpdateIfGreater(int first, int& second){
+    if(first >= second) second = first;
 }
 
 int main(){

@@ -1,58 +1,65 @@
 #include <iostream>
 #include <map>
 
-void CHANGE_CAPITAL(std::map<std::string, std::string>& map){
-    std::string str1 = "";
-    std::string str2 = "";
-    std::cin >> str1 >> str2;
-    if(map.find(str1) == map.end()){
-        map[str1] = str2;
-        std::cout << "Introduce new country " << str1 << " with capital " << str2 << std::endl;
-    }
-    else{
-        if(str2 == map[str1]){
-            std::cout << "Country " << str1 << " hasn't changed its capital" << std::endl;
+using std::map;
+using std::string;
+
+void CHANGE_CAPITAL(map<string, string>& dict, const string& country_name, const string& new_capital){
+
+    auto country = dict.find(country_name);
+    if(country == dict.end()){
+        country = dict.emplace(country_name, new_capital).first;
+        std::cout << "Introduce new country " << country_name
+                  << " with capital " << country->second << std::endl;
+    } else {
+        if(new_capital == country->second){
+            std::cout << "Country " << country_name
+                      << " hasn't changed its capital" << std::endl;
         }
-        else{
-            std::cout << "Country " << str1 << " has changed its capital from " << map[str1] <<  " to " << str2 << std::endl;
-            map[str1] = str2;
+        else {
+            std::cout << "Country " << country_name << " has changed its capital from "
+                      << country->second <<  " to " << new_capital << std::endl;
+            country->second = new_capital;
         }
     }
 }
 
-void RENAME(std::map<std::string, std::string>& map){
-    std::string str1 = "";
-    std::string str2 = "";
-    std::cin >> str1 >> str2;
-    if(map.find(str1) != map.end() && map.find(str2) == map.end() && str1 != str2){
-        std::cout << "Country " << str1 << " with capital " << map[str1] << " has been renamed to " << str2 << std::endl;
-        map[str2] = map[str1];
-        map.erase(str1);
-    }
-    else{
+void RENAME(map<string, string>& dict, const string& old_country_name, const string& new_country_name){
+
+    auto old_country = dict.find(old_country_name);
+    auto new_country = dict.find(new_country_name);
+
+    if(old_country != dict.end() && new_country == dict.end() && old_country_name != new_country_name) {
+        dict[new_country_name] = old_country->second;
+
+        std::cout << "Country " << old_country_name << " with capital "
+                  << old_country->second << " has been renamed to " << new_country_name << std::endl;
+
+        dict.erase(old_country_name);
+
+    } else {
         std::cout << "Incorrect rename, skip" << std::endl;
     }
 }
 
-void ABOUT(const std::map<std::string, std::string>& map){
-    std::string str = "";
-    std::cin >> str;
-    if(map.find(str) != map.end()){
-        std::cout << "Country " << str << " has capital " << map.find(str)->second << std::endl;
+void ABOUT(const std::map<std::string, std::string>& dict, const std::string& country_name){
+    auto country = dict.find(country_name);
+
+    if(country != dict.end()){
+        std::cout << "Country " << country_name << " has capital " << country->second << std::endl;
     }
     else{
-        std::cout << "Country " << str << " doesn't exist" << std::endl;
+        std::cout << "Country " << country_name << " doesn't exist" << std::endl;
     }
 }
 
-void DUMP(const std::map<std::string, std::string>& map){
-    if(!map.empty()){
-        for(const auto& item : map){
+void DUMP(const std::map<std::string, std::string>& dict){
+    if(dict.empty()) {
+        std::cout << "There are no countries in the world" << std::endl;
+    } else {
+        for(const auto& item : dict){
             std::cout << item.first << "/" << item.second << std::endl;
         }
-    }
-    else {
-        std::cout << "There are no countries in the world" << std::endl;
     }
 }
 
@@ -64,13 +71,19 @@ int main(){
         std::string str;
         std::cin >> str;
         if(str == "CHANGE_CAPITAL"){
-            CHANGE_CAPITAL(map);
+            string country_name, new_capital;
+            std::cin >> country_name >> new_capital;
+            CHANGE_CAPITAL(map, country_name, new_capital);
         }
         else if(str == "RENAME"){
-            RENAME(map);
+            string old_country_name, new_country_name;
+            std::cin >> old_country_name >> new_country_name;
+            RENAME(map, old_country_name, new_country_name);
         }
         else if(str == "ABOUT"){
-            ABOUT(map);
+            std::string country_name;
+            std::cin >> country_name;
+            ABOUT(map, country_name);
         }
         else if(str == "DUMP"){
             DUMP(map);

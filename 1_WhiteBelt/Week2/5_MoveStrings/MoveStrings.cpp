@@ -1,21 +1,26 @@
 #include <iostream>
 #include <vector>
 
-void MoveStrings(std::vector<std::string>& vec1, std::vector<std::string>& vec2){
-    for(auto str : vec1)
-        vec2.push_back(str);
+using std::vector;
+using std::string;
+
+void MoveStrings(vector<string>& vec1, vector<string>& vec2){
+    vec2.reserve(vec1.size() + vec2.size());
+    for(auto& str : vec1)
+        vec2.emplace_back(std::move(str));
     vec1.clear();
 }
 
 int main(){
 
-std::vector<std::string> vec1 = {"kek", "lol", "mem", "krinj", "booling"}, vec2 = {"krash", "fake"};
+    vector<string> vec1 = {"str1", "str2", "str3", "str4", "str5"}, vec2 = {"str6", "str7"};
+
     MoveStrings(vec1, vec2);
-    for(auto str : vec1){
-        std::cout << str << std::endl;
+    if(vec1.empty()){
+        for(const auto& str : vec2){
+            std::cout << str << std::endl;
+        }
     }
-    for(auto str : vec2){
-        std::cout << str << std::endl;
-    }
+
     return 0;
 }

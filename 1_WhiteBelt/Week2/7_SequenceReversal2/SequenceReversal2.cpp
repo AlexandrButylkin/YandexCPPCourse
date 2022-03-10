@@ -2,21 +2,23 @@
 #include <vector>
 
 std::vector<int> Reversed(const std::vector<int>& vec){
+    if(vec.empty()) return {};
+
     std::vector<int> ans;
-    if(vec.empty()){
-        return ans;
+    ans.reserve(vec.size());
+
+    for(int i = vec.size() - 1; i >= 0; --i){
+        ans.emplace_back(vec[i]);
     }
-    std::vector<int>::const_iterator end = vec.end() - 1;
-    while(end >= vec.begin()){
-        ans.push_back(*end);
-        end--;
-    }
+
     return ans;
 }
 
 int main(){
-    std::vector<int> vec = {2};
-    vec = Reversed(vec);
+    std::vector<int> vec = {2, 3, 4, 5, 6};
+    for(auto i : Reversed(vec)){
+        std::cout << i << " ";
+    }
     for(auto i : vec){
         std::cout << i << " ";
     }

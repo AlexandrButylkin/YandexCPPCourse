@@ -1,19 +1,18 @@
 #include <iostream>
 
-bool IsPalindrom(std::string str){
-	std::string::iterator beg = str.begin();
-	std::string::iterator end = str.end() - 1;
-	while(beg <= end){
-		if(*beg != *end) return false;
-		end--;
-		beg++;
-	}
-	return true;
+bool IsPalindrom(const std::string& str){
+    int beg = 0, end = str.size() - 1;
+    while(beg <= end){
+        if(str[beg] != str[end]) return false;
+        --end;
+        ++beg;
+    }
+    return true;
 }
 
 int main(){
-	std::string str = "";
-	std::cin >> str;
-	std::cout << IsPalindrom(str) << std::endl;
-	return 0;
+    std::string str;
+    std::cin >> str;
+    std::cout << IsPalindrom(str) << std::endl;
+    return 0;
 }

@@ -3,102 +3,114 @@
 #include <vector>
 #include <map>
 
-void NEW_BUS(std::vector<std::pair<std::string, std::vector<std::string>>>& map){
-    std::string bus;
-    int count_stop = 0;
-    std::cin >> bus >> count_stop;
-    std::vector<std::string> bus_stop(count_stop);
-    for(std::string& str : bus_stop)
-        std::cin >> str;
-    std::pair<std::string, std::vector<std::string>> pair(bus, bus_stop);
-    map.push_back(pair);
+using std::map;
+using std::string;
+using std::vector;
+
+using Stop = string;
+using Bus = string;
+using Stops = map<Stop, vector<string>>;
+using Buses = map<Bus, vector<string>>;
+
+void NEW_BUS(Stops& buses, Buses& stops,
+             const string& bus_name, const vector<string>& stops_name){
+    buses[bus_name] = stops_name;
+    for(const auto& stop : stops_name){
+        stops[stop].emplace_back(bus_name);
+    }
 }
 
-void BUSES_FOR_STOP(const std::vector<std::pair<std::string, std::vector<std::string>>>& map){
-    std::string stop;
-    std::cin >> stop;
-    bool flag = false;
-    for(const std::pair<std::string, std::vector<std::string>>& buses : map){
-        for(const std::string& stops : buses.second){
-            if(stop == stops){
-                std::cout << buses.first << " ";
-                flag = true;
-                break;
-            }
-        }
-    }
-    if(!flag){
+void BUSES_FOR_STOP(const Stops& stops, const string& stop_name) {
+
+    const auto &stop = stops.find(stop_name);
+    if (stop == stops.end()) {
         std::cout << "No stop";
     }
+    for (const auto &bus: stop->second) {
+        std::cout << bus << " ";
+    }
+
     std::cout << std::endl;
 }
 
-void BUSES_FOR_STOP(const std::vector<std::pair<std::string, std::vector<std::string>>>& map, const std::string& stop, const std::string& bus){
-    bool flag = false;
-    for(const std::pair<std::string, std::vector<std::string>>& buses : map){
-        for(const std::string& stops : buses.second){
-            if(stop == stops && buses.first != bus){
-                std::cout << buses.first << " ";
-                flag = true;
-                break;
-            }
-        }
-    }
-    if(!flag){
-        std::cout << "no interchange";
-    }
-    std::cout << std::endl;
-}
+void STOPS_FOR_BUS(const Buses& buses, const string& bus_name, const Stops& stops){
 
-void STOPS_FOR_BUS(const std::vector<std::pair<std::string, std::vector<std::string>>>& map){
-    std::string bus;
-    std::cin >> bus;
-    bool flag = false;
+    const auto bus = buses.find(bus_name);
 
-    for(const std::pair<std::string, std::vector<std::string>>& buses : map){
-        if(buses.first == bus){
-            flag = true;
-            for(const std::string& stops : buses.second){
-                std::cout << "Stop " << stops << ": ";
-                BUSES_FOR_STOP(map, stops, bus);
-            }
-        }
-    } 
-    if(!flag) std::cout << "No bus" << std::endl;
-}
-
-void ALL_BUSES(const std::vector<std::pair<std::string, std::vector<std::string>>>& map){
-    if(!map.empty()){
-        std::vector<std::pair<std::string, std::vector<std::string>>> new_map = map;
-        std::sort(new_map.begin(), new_map.end());
-        for(const std::pair<std::string, std::vector<std::string>>& buses : new_map){
-            std::cout << "Bus " << buses.first << ": ";
-            for(const std::string& stops : buses.second){
-                std::cout << stops << " ";
+    if(bus == buses.end()) {
+        std::cout << "No bus" << std::endl;
+    } else {
+        for(const auto& stop : bus->second){
+            std::cout << "Stop " << stop << ": ";
+            if (stops.at(stop).size() == 1) {
+                std::cout << "no interchange";
+            } else {
+                for (const auto &other_bus: stops.at(stop)) {
+                    if (other_bus != bus_name) {
+                        std::cout << other_bus << " ";
+                    }
+                }
             }
             std::cout << std::endl;
         }
-    } else std::cout << "No buses" << std::endl;
+    }
+}
+
+void ALL_BUSES(const Buses& buses){
+
+    if(buses.empty()){
+        std::cout << "No buses";
+    }
+
+    for(const auto& bus : buses){
+        std::cout << "Bus " << bus.first << ": ";
+        for(const auto& stop : bus.second){
+            std::cout << stop << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 int main(){
     int n = 0;
     std::cin >> n;
-    std::vector<std::pair<std::string, std::vector<std::string>>> map;
+
+    Stops stops;
+    Buses buses;
+
     while(n > 0){
-        std::string str;
-        std::cin >> str;
-        if(str == "NEW_BUS"){
-            NEW_BUS(map);
+        std::string request;
+        std::cin >> request;
+        if(request == "NEW_BUS"){
+
+            string bus_name;
+            size_t count = 0;
+            vector<string> stops_for_bus;
+            std::cin >> bus_name >> count;
+            stops_for_bus.reserve(count);
+            for(auto i = 0; i < count; ++i){
+                string stop;
+                std::cin >> stop;
+                stops_for_bus.emplace_back(std::move(stop));
+            }
+
+            NEW_BUS(buses, stops, bus_name, stops_for_bus);
         }
-        else if(str == "BUSES_FOR_STOP"){
-            BUSES_FOR_STOP(map);
+        else if(request == "BUSES_FOR_STOP"){
+
+            string stop;
+            std::cin >> stop;
+
+            BUSES_FOR_STOP(stops, stop);
         }
-        else if(str == "STOPS_FOR_BUS"){
-            STOPS_FOR_BUS(map);
+        else if(request == "STOPS_FOR_BUS"){
+            string bus;
+            std::cin >> bus;
+            STOPS_FOR_BUS(buses, bus, stops);
         }
-        else if(str == "ALL_BUSES"){
-            ALL_BUSES(map);
+        else if(request == "ALL_BUSES"){
+            ALL_BUSES(buses);
         }
         n--;
     }

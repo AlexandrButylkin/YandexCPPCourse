@@ -1,20 +1,22 @@
 #include <iostream>
-#include <algorithm>
-#include <cmath>
 #include <vector>
 
 int main(){
     int n = 0;
     std::cin >> n;
-    std::vector<int> vec(n);
-    for(auto& i : vec){
+
+    std::vector<int> A(n);
+    for(auto& i : A){
         std::cin >> i;
     }
-    std::sort(vec.begin(), vec.end(), [](int a, int b){return abs(a) < abs(b);});
+
+    std::sort(A.begin(), A.end(), [](int a, int b){return abs(a) < abs(b);});
+
     std::cout << std::endl;
-    for(const auto& i : vec){
+    for(const auto& i : A){
         std::cout << i << " ";
     }
     std::cout << std::endl;
+
     return 0;
 }

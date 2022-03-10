@@ -1,8 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <set>
-#include <map>
-#include <algorithm>
 #include "Person.h"
 
 using namespace std;
