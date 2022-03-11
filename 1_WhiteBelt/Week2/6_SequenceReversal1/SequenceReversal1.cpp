@@ -2,7 +2,6 @@
 #include <vector>
 
 void Reverse(std::vector<int> &vec) {
-    //return std::reverse(vec.begin(), vec.end());
     if (vec.empty()) return;
     int beg = 0, end = vec.size() - 1;
     while (beg <= end) {

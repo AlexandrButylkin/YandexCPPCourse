@@ -1,25 +1,33 @@
-#ifndef INC_4_NAMES1_PERSON_H
-#define INC_4_NAMES1_PERSON_H
+#ifndef INC_5_NAMES2_PERSON_H
+#define INC_5_NAMES2_PERSON_H
 
 
 #include <iostream>
 #include <map>
+#include <vector>
 
-class Person
-{
+using std::string;
+using std::vector;
+using std::map;
+
+class Person final {
 public:
-    void ChangeFirstName(int year, const std::string &first_name);
-    void ChangeLastName(int year, const std::string &last_name);
-    std::string GetFullName(int year) const;
+    void ChangeFirstName(int year, const string &first_name);
+    void ChangeLastName(int year, const string &last_name);
+    string GetFullName(int year) const;
+    string GetFullNameWithHistory(int year) const;
 
 private:
 
-    static std::string GetName(const std::map<int, std::string>& names, const int& year);
+    static string GetName(const map<int, string>& names, const int year);
+    static string GetNameWithHistory(const map<int, string>& names, const int year);
+    static vector<string> MakeHistory(const map<int, string>& names, const int year);
+    static string JoinNames(const string& first_name, const string& last_name);
 
 private:
-    std::map<int, std::string> fname;
-    std::map<int, std::string> lname;
+    map<int, string> fname;
+    map<int, string> lname;
 };
 
 
-#endif //INC_4_NAMES1_PERSON_H
+#endif //INC_5_NAMES2_PERSON_H

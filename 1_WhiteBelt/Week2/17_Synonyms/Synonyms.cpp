@@ -52,19 +52,23 @@ int main(){
     while(n > 0){
         std::string request;
         std::cin >> request;
+
         if(request == "ADD"){
             string word1, word2;
             std::cin >> word1 >> word2;
+
             ADD(dict, word1, word2);
         }
         else if(request == "COUNT"){
             string word;
             std::cin >> word;
+
             COUNT(dict, word);
         }
         else if(request == "CHECK"){
             string word1, word2;
             std::cin >> word1 >> word2;
+
             CHECK(dict, word1, word2);
         }
         n--;

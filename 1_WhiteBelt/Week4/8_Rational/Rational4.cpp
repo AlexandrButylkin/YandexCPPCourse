@@ -1,41 +1,22 @@
 #include <iostream>
+#include <numeric>
+#include <tuple>
 #include <sstream>
+
 using namespace std;
 
-void swap(int& a, int& b){
-    int c = a;
-    a = b;
-    b = c;
-}
-int gcd(const int& num, const int& denom){
-    if(denom != 0){
-        int a = num, b = denom;
-        if(a < 0) a *= -1;
-        if(b < 0) b *= -1;
-        if(a == b)return a;
-        else if(b > a) swap(a, b);
-        while (a != b){
-            while(a > b){
-                a -= b;
-                if(a == b) return b;
-            }
-            swap(a, b);
-        }
-    }
-    return -1;
-}
-
-class Rational {
+class Rational final {
 public:
     Rational() : numerator(0), denominator(1) {}
 
     Rational(const int& numerator_, const int& denominator_) {
+        //обработка отрицательного знаменателя будет обработана в следующих частях задачи
         if(numerator_ == 0){
             denominator = 1;
             numerator = 0;
-        } 
+        }
         else {
-            int gcd_ = gcd(numerator_, denominator_);
+            int gcd_ = std::gcd(numerator_, denominator_);
             if(denominator_ < 0) {
                 denominator = denominator_ * -1 / gcd_;
                 numerator = numerator_ * -1 / gcd_;
@@ -46,14 +27,8 @@ public:
         }
     }
 
-    Rational(const Rational& rational) : numerator(rational.numerator), denominator(rational.denominator) {}
-
-    Rational& operator=(const Rational& rational){
-        if(&rational == this) return *this;
-        numerator = rational.numerator;
-        denominator = rational.denominator;
-        return *this;
-    }
+    Rational(const Rational &rational) = default;
+    Rational &operator=(const Rational &rational) = default;
 
     int Numerator() const {
         return numerator;
@@ -63,85 +38,71 @@ public:
         return denominator;
     }
 
-    friend ostream& operator<<(ostream& os, const Rational& rational){
-        os << rational.numerator << "/" << rational.denominator;
-        return os;
-    }
-
-    friend istream& operator>>(istream& is, Rational& rational){
-        int num = 0, denom = 0;
-        char c;
-        if(!(is >> num)) return is;
-        if(is >> c) if(c != '/') return is;
-        if(!(is >> denom)) return is;
-        rational = Rational(num, denom);
-        return is;
-    }
-
-    friend bool operator==(const Rational& lhs, const Rational& rhs){
-        if(lhs.denominator == rhs.denominator) 
-            return lhs.numerator == rhs.numerator;
-        else return false;
-    }
-
-    friend void cd(const Rational& lhs, const Rational& rhs, int& first, int& second, int& lcm_){
-        int gcd_ = gcd(lhs.denominator, rhs.denominator);
-        lcm_ = (rhs.denominator * lhs.denominator) / gcd_;
-        first = lhs.numerator * (lcm_ / lhs.denominator);
-        second = rhs.numerator * (lcm_ / rhs.denominator);
-    }
-
-    friend Rational operator+(const Rational& lhs, const Rational& rhs){
-        int first = 0, second = 0, lcm_ = 0;
-        cd(lhs, rhs, first, second, lcm_);
-        return {first + second, lcm_};
-    }
-
-    friend Rational operator-(const Rational& lhs, const Rational& rhs){
-        int first = 0, second = 0, lcm_ = 0;
-        cd(lhs, rhs, first, second, lcm_);
-        return {first - second, lcm_};
-    }
-
-    friend Rational operator*(const Rational& lhs, const Rational& rhs){
-        int num = lhs.numerator * rhs.numerator;
-        int denom = lhs.denominator * rhs.denominator;
-        return Rational(num, denom);
-    }
-
-    friend Rational operator/(const Rational& lhs, const Rational& rhs){
-        Rational a(rhs);
-        swap(a.numerator, a.denominator);
-        return lhs * a;
-    }
-
-    ~Rational(){};
+    ~Rational() = default;
 
 private:
     int numerator;
     int denominator;
 };
 
-// Вставьте сюда реализацию operator == для класса Rational из второй части
+bool operator==(const Rational& lhs, const Rational& rhs){
+    return std::tuple{lhs.Denominator(), lhs.Numerator()} ==
+           std::tuple{rhs.Denominator(), rhs.Numerator()};
+}
 
-// Реализуйте для класса Rational операторы << и >>
+Rational operator+(const Rational& lhs, const Rational& rhs){
+    int lcm = std::lcm(lhs.Denominator(), rhs.Denominator());
+    return {lhs.Numerator() * (lcm / lhs.Denominator()) +
+            rhs.Numerator() * (lcm / rhs.Denominator()), lcm};
+}
 
-int main() {
-    /*{
-        istringstream input("");
-        Rational r;
-        input >> r;
-        bool equal = r == Rational();
-        if (!equal) {
-            cout << "pustota " << r << endl;
-            return 2;
+Rational operator-(const Rational& lhs, const Rational& rhs){
+    int lcm = std::lcm(lhs.Denominator(), rhs.Denominator());
+    return {lhs.Numerator() * (lcm / lhs.Denominator()) -
+            rhs.Numerator() * (lcm / rhs.Denominator()), lcm};
+}
+
+Rational operator*(const Rational& lhs, const Rational& rhs){
+    int num = lhs.Numerator() * rhs.Numerator();
+    int denom = lhs.Denominator() * rhs.Denominator();
+    return {num, denom};
+}
+
+Rational operator/(const Rational& lhs, const Rational& rhs){
+    int num = rhs.Numerator();
+    int denom = rhs.Denominator();
+    std::swap(num, denom);
+    return lhs * Rational(num, denom);
+}
+
+ostream& operator<<(ostream& os, const Rational& rational){
+    os << rational.Numerator() << "/" << rational.Denominator();
+    return os;
+}
+
+istream& operator >> (istream& is, Rational& rational) {
+    int num = 0, denom = 0;
+    char c;
+
+    if (is) {
+        is >> num >> c >> denom;
+        if (is) {
+            if (c == '/') {
+                rational = Rational(num, denom);
+            }
+            else {
+                is.setstate(ios_base::failbit);
+            }
         }
     }
 
+    return is;
+}
+
+int main() {
     {
         ostringstream output;
         output << Rational(-6, 8);
-        //std::cout << Rational(-6, 8);
         if (output.str() != "-3/4") {
             cout << "Rational(-6, 8) should be written as \"-3/4\"" << endl;
             return 1;
@@ -157,14 +118,11 @@ int main() {
             cout << "5/7 is incorrectly read as " << r << endl;
             return 2;
         }
-    }*/
+    }
 
     {
-        istringstream input(" ");
+        istringstream input("");
         Rational r;
-        int b = input.gcount();
-        //bool c = input.eofbit();
-        bool a = !(input >> r);
         bool correct = !(input >> r);
         if (!correct) {
             cout << "Read from empty stream works incorrectly" << endl;
@@ -172,7 +130,7 @@ int main() {
         }
     }
 
-    /*{
+    {
         istringstream input("5/7 10/8");
         Rational r1, r2;
         input >> r1 >> r2;
@@ -204,7 +162,18 @@ int main() {
 
             return 6;
         }
-    }*/
+    }
+
+    {
+        istringstream input("2/4/6/8");
+        Rational r1;
+        input >> r1;
+        bool correct = r1 == Rational(1, 2);
+        if (!correct) {
+            cout << "Multiple-slashed number sequence value read incorrectly: " << r1 << endl;
+            return 7;
+        }
+    }
 
     cout << "OK" << endl;
     return 0;

@@ -1,39 +1,23 @@
-#ifndef REVERSIBLESTRING_H_
-#define REVERSIBLESTRING_H_
+#ifndef INC_6_REVERSIBLESTRING_REVERSIBLESTRING_H
+#define INC_6_REVERSIBLESTRING_REVERSIBLESTRING_H
 
-#include <iostream>
+#include <string>
+#include <algorithm>
 
-class ReversibleString {
+class ReversibleString final {
 public:
-    ReversibleString() : str("") {}
-    ReversibleString(const std::string& str_) : str(str_) {}
-    ReversibleString(const ReversibleString& str_) : str(str_.str) {}
-    ReversibleString& operator=(const ReversibleString& str_){
-        if(this == &str_){
-            return *this;
-        }
-        str = str_.str;
-        return *this;
-    };
+    ReversibleString() : str() {}
+    explicit ReversibleString(std::string str_) : str(std::move(str_)) {}
+    ReversibleString(const ReversibleString& str_) = default;
+    ReversibleString& operator=(const ReversibleString& str_) = default;
 
+    void Reverse();
 
-    void Reverse(){
-        std::string::iterator beg = str.begin();
-        std::string::iterator end = str.end() - 1;
-        while(beg <= end){
-            char c = *beg;
-            *beg = *end;
-            *end = c;
-            ++beg;
-            --end;
-        }
-    }
-
-    std::string ToString() const{
-        return str;
-    }
+    std::string ToString() const{ return str; }
+    std::string& ToString() { return str; }
 
 private:
     std::string str;
 };
-#endif
+
+#endif //INC_6_REVERSIBLESTRING_REVERSIBLESTRING_H

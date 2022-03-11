@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 
-class SortedStrings {
+class SortedStrings final {
 private:
     std::vector<std::string> data;
 public:
@@ -15,7 +15,7 @@ public:
     }
 };
 
-void PrintSortedStrings(SortedStrings& strings) {
+void PrintSortedStrings(const SortedStrings& strings) {
     for (const std::string& s : strings.GetSortedStrings()) {
         std::cout << s << " ";
     }

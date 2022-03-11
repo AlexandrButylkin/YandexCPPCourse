@@ -1,7 +1,6 @@
 #ifndef INCOGNIZABLE_H_
 #define INCOGNIZABLE_H_
 
-#include <iostream>
 #include <vector>
 
 class Incognizable {

@@ -4,7 +4,9 @@
 using std::map;
 using std::string;
 
-void CHANGE_CAPITAL(map<string, string>& dict, const string& country_name, const string& new_capital){
+using Dictionary = map<string, string>;
+
+void CHANGE_CAPITAL(Dictionary & dict, const string& country_name, const string& new_capital){
 
     auto country = dict.find(country_name);
     if(country == dict.end()){
@@ -24,7 +26,7 @@ void CHANGE_CAPITAL(map<string, string>& dict, const string& country_name, const
     }
 }
 
-void RENAME(map<string, string>& dict, const string& old_country_name, const string& new_country_name){
+void RENAME(Dictionary& dict, const string& old_country_name, const string& new_country_name){
 
     auto old_country = dict.find(old_country_name);
     auto new_country = dict.find(new_country_name);
@@ -42,7 +44,7 @@ void RENAME(map<string, string>& dict, const string& old_country_name, const str
     }
 }
 
-void ABOUT(const std::map<std::string, std::string>& dict, const std::string& country_name){
+void ABOUT(const Dictionary& dict, const std::string& country_name){
     auto country = dict.find(country_name);
 
     if(country != dict.end()){
@@ -53,7 +55,7 @@ void ABOUT(const std::map<std::string, std::string>& dict, const std::string& co
     }
 }
 
-void DUMP(const std::map<std::string, std::string>& dict){
+void DUMP(const Dictionary& dict){
     if(dict.empty()) {
         std::cout << "There are no countries in the world" << std::endl;
     } else {

@@ -1,44 +1,24 @@
 #include <iostream>
-#include <exception>
+#include <numeric>
+#include <tuple>
+#include <sstream>
+
 using namespace std;
 
-void swap(int& a, int& b){
-    int c = a;
-    a = b;
-    b = c;
-}
-int gcd(const int& num, const int& denom){
-    if(denom != 0){
-        int a = num, b = denom;
-        if(a < 0) a *= -1;
-        if(b < 0) b *= -1;
-        if(a == b)return a;
-        else if(b > a) swap(a, b);
-        while (a != b){
-            while(a > b){
-                a -= b;
-                if(a == b) return b;
-            }
-            swap(a, b);
-        }
-    }
-    return -1;
-}
-
-class Rational {
+class Rational final {
 public:
     Rational() : numerator(0), denominator(1) {}
 
     Rational(const int& numerator_, const int& denominator_) {
         if(denominator_ == 0){
-            throw invalid_argument("Invalid argument");
+            throw invalid_argument("Invalid argument: denominator = 0");
         }
         if(numerator_ == 0){
             denominator = 1;
             numerator = 0;
-        } 
+        }
         else {
-            int gcd_ = gcd(numerator_, denominator_);
+            int gcd_ = std::gcd(numerator_, denominator_);
             if(denominator_ < 0) {
                 denominator = denominator_ * -1 / gcd_;
                 numerator = numerator_ * -1 / gcd_;
@@ -49,14 +29,8 @@ public:
         }
     }
 
-    Rational(const Rational& rational) : numerator(rational.numerator), denominator(rational.denominator) {}
-
-    Rational& operator=(const Rational& rational){
-        if(&rational == this) return *this;
-        numerator = rational.numerator;
-        denominator = rational.denominator;
-        return *this;
-    }
+    Rational(const Rational &rational) = default;
+    Rational &operator=(const Rational &rational) = default;
 
     int Numerator() const {
         return numerator;
@@ -66,111 +40,105 @@ public:
         return denominator;
     }
 
-    friend ostream& operator<<(ostream& os, const Rational& rational){
-        os << rational.numerator << "/" << rational.denominator;
-        return os;
-    }
-
-    friend istream& operator>>(istream& is, Rational& rational){
-        int num = 0, denom = 0;
-        char c;
-        if(!(is >> num)) return is;
-        if(is >> c) if(c != '/') return is;
-        if(!(is >> denom)) return is;
-        if(denom == 0) throw invalid_argument("Invalid argument");
-        rational = Rational(num, denom);
-        return is;
-    }
-
-    friend bool operator==(const Rational& lhs, const Rational& rhs){
-        if(lhs.denominator == rhs.denominator) 
-            return lhs.numerator == rhs.numerator;
-        else return false;
-    }
-
-    friend void cd(const Rational& lhs, const Rational& rhs, int& first, int& second, int& lcm_){
-        int gcd_ = gcd(lhs.denominator, rhs.denominator);
-        lcm_ = (rhs.denominator * lhs.denominator) / gcd_;
-        first = lhs.numerator * (lcm_ / lhs.denominator);
-        second = rhs.numerator * (lcm_ / rhs.denominator);
-    }
-
-    friend Rational operator+(const Rational& lhs, const Rational& rhs){
-        int first = 0, second = 0, lcm_ = 0;
-        cd(lhs, rhs, first, second, lcm_);
-        return {first + second, lcm_};
-    }
-
-    friend Rational operator-(const Rational& lhs, const Rational& rhs){
-        int first = 0, second = 0, lcm_ = 0;
-        cd(lhs, rhs, first, second, lcm_);
-        return {first - second, lcm_};
-    }
-
-    friend Rational operator*(const Rational& lhs, const Rational& rhs){
-        int num = lhs.numerator * rhs.numerator;
-        int denom = lhs.denominator * rhs.denominator;
-        return Rational(num, denom);
-    }
-
-    friend Rational operator/(const Rational& lhs, const Rational& rhs){
-        if(rhs.numerator == 0){
-            throw domain_error("Division by zero");
-        }
-        Rational a(rhs);
-        swap(a.numerator, a.denominator);
-        return lhs * a;
-    }
-
-
-    friend bool operator<(const Rational& lhs, const Rational& rhs){
-        int first = 0, second = 0, lcm_ = 0;
-        cd(lhs, rhs, first, second, lcm_);
-        if(first < second) return true;
-        else return false;
-    }
-
-    friend bool operator<=(const Rational& lhs, const Rational& rhs){
-        if(!(lhs < rhs)){
-            return lhs == rhs;
-        }
-        else return true;
-    }
-
-    ~Rational(){};
+    ~Rational() = default;
 
 private:
     int numerator;
     int denominator;
 };
 
+bool operator==(const Rational& lhs, const Rational& rhs){
+    return std::tuple{lhs.Denominator(), lhs.Numerator()} ==
+           std::tuple{rhs.Denominator(), rhs.Numerator()};
+}
+
+Rational operator+(const Rational& lhs, const Rational& rhs){
+    int lcm = std::lcm(lhs.Denominator(), rhs.Denominator());
+    return {lhs.Numerator() * (lcm / lhs.Denominator()) +
+            rhs.Numerator() * (lcm / rhs.Denominator()), lcm};
+}
+
+Rational operator-(const Rational& lhs, const Rational& rhs){
+    int lcm = std::lcm(lhs.Denominator(), rhs.Denominator());
+    return {lhs.Numerator() * (lcm / lhs.Denominator()) -
+            rhs.Numerator() * (lcm / rhs.Denominator()), lcm};
+}
+
+Rational operator*(const Rational& lhs, const Rational& rhs){
+    int num = lhs.Numerator() * rhs.Numerator();
+    int denom = lhs.Denominator() * rhs.Denominator();
+    return {num, denom};
+}
+
+Rational operator/(const Rational& lhs, const Rational& rhs){
+    if(rhs.Numerator() == 0){
+        throw domain_error("Division by zero");
+    }
+    int num = rhs.Numerator();
+    int denom = rhs.Denominator();
+    std::swap(num, denom);
+    return lhs * Rational(num, denom);
+}
+
+ostream& operator<<(ostream& os, const Rational& rational){
+    os << rational.Numerator() << "/" << rational.Denominator();
+    return os;
+}
+
+istream& operator >> (istream& is, Rational& rational) {
+    int num = 0, denom = 0;
+    char c;
+
+    if (is) {
+        is >> num >> c >> denom;
+        if (is) {
+            if (c == '/') {
+                rational = Rational(num, denom);
+            }
+            else {
+                is.setstate(ios_base::failbit);
+            }
+        }
+    }
+
+    return is;
+}
+
+bool operator < (const Rational& lhs, const Rational& rhs) {
+    Rational number = lhs - rhs;
+    return number.Numerator() < 0;
+}
+
+bool operator <= (const Rational& lhs, const Rational& rhs) {
+    Rational number = lhs - rhs;
+    return number.Numerator() <= 0;
+}
+
+bool operator > (const Rational& lhs, const Rational& rhs) {
+    Rational number = lhs - rhs;
+    return number.Numerator() > 0;
+}
+
+bool operator >= (const Rational& lhs, const Rational& rhs) {
+    Rational number = lhs - rhs;
+    return number.Numerator() >= 0;
+}
+
 int main() {
-    Rational first, second;
-        char operation = '\000';
-            try {
-                std::cin >> first >> operation >> second;
-            } catch (invalid_argument& str) {
-                std::cout << str.what() << std::endl;
-                return 1;
-            }
+    try {
+        Rational r(1, 0);
+        cout << "Doesn't throw in case of zero denominator" << endl;
+        return 1;
+    } catch (invalid_argument&) {
+    }
 
-            try {
-                if(operation == '+'){
-                    std::cout << first + second << std::endl;
-                }
-                else if(operation == '-'){
-                    std::cout << first - second << std::endl;
-                }
-                else if(operation == '*'){
-                    std::cout << first * second << std::endl;
-                }
-                else if(operation == '/'){
-                    std::cout << first / second << std::endl;
-                }
+    try {
+        auto x = Rational(1, 2) / Rational(0, 1);
+        cout << "Doesn't throw in case of division by zero" << endl;
+        return 2;
+    } catch (domain_error&) {
+    }
 
-            } catch (domain_error& str) {
-                std::cout << str.what() << std::endl;
-                return 2;
-            }
+    cout << "OK" << endl;
     return 0;
 }

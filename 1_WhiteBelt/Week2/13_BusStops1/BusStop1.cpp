@@ -72,6 +72,8 @@ void ALL_BUSES(const Buses& buses){
     std::cout << std::endl;
 }
 
+
+
 int main(){
     int n = 0;
     std::cin >> n;
@@ -86,9 +88,11 @@ int main(){
 
             string bus_name;
             size_t count = 0;
-            vector<string> stops_for_bus;
             std::cin >> bus_name >> count;
+
+            vector<string> stops_for_bus;
             stops_for_bus.reserve(count);
+
             for(auto i = 0; i < count; ++i){
                 string stop;
                 std::cin >> stop;
@@ -107,6 +111,7 @@ int main(){
         else if(request == "STOPS_FOR_BUS"){
             string bus;
             std::cin >> bus;
+
             STOPS_FOR_BUS(buses, bus, stops);
         }
         else if(request == "ALL_BUSES"){
