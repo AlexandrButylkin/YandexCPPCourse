@@ -1,7 +1,8 @@
 #include "Matrix.h"
 
 Matrix::Matrix(int num_rows, int num_cols) {
-    if(num_rows < 0 || num_cols < 0) throw std::out_of_range("out_of_range");
+    if(num_rows < 0) throw std::out_of_range("Num rows < 0");
+    if(num_cols < 0) throw std::out_of_range("Num columns < 0");
 
     num_cols_ = num_cols;
     num_rows_ = num_rows;
@@ -9,9 +10,9 @@ Matrix::Matrix(int num_rows, int num_cols) {
 }
 
 void Matrix::Reset(int num_rows, int num_cols){
-    if(num_rows < 0 || num_cols < 0) {
-        throw std::out_of_range("out_of_range");
-    }
+    if(num_rows < 0) throw std::out_of_range("Num rows < 0");
+    if(num_cols < 0) throw std::out_of_range("Num columns < 0");
+
     matrix.assign(num_rows, std::vector<int>(num_cols));
 }
 
@@ -80,13 +81,10 @@ bool operator==(const Matrix& lhs, const Matrix& rhs){
 }
 
 Matrix operator+(const Matrix& lhs, const Matrix& rhs){
-
-    if(lhs.GetNumCols() != rhs.GetNumCols() || lhs.GetNumRows() != rhs.GetNumRows()){
-        throw std::invalid_argument("invalid_argument");
-    }
+    if(lhs.GetNumRows() != rhs.GetNumRows()) throw std::invalid_argument("num rows lhs != num rows rhs");
+    if(lhs.GetNumCols() != rhs.GetNumCols()) throw std::invalid_argument("num columns lhs != num columns rhs");
 
     Matrix result(lhs.GetNumRows(), rhs.GetNumCols());
-
     for(int i = 0, rows = lhs.GetNumRows(); i < rows; ++i){
         for(int j = 0, cols = lhs.GetNumCols(); j < cols; ++j){
             result.At(i, j) = lhs.At(i, j) + rhs.At(i, j);

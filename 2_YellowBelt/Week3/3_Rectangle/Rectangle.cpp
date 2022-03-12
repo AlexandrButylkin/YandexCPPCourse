@@ -1,8 +1,7 @@
 #include "Rectangle.h"
-Rectangle::Rectangle(int width, int height)
+Rectangle::Rectangle(int width, int height) : width_(width), height_(height)
 {
-    width_ = width;
-    height_ = height;
+    if(width < 0 || height < 0) throw std::invalid_argument("Invalid argument");
 }
 
 int Rectangle::GetArea() const {

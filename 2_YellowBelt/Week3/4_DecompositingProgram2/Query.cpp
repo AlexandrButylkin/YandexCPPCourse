@@ -1,7 +1,6 @@
 #include "Query.h"
 
 istream& operator>> (istream& is, Query& q) {
-    // Реализуйте эту функцию
     string operation_code;
     is >> operation_code;
 

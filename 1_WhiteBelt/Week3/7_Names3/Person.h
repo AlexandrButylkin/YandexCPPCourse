@@ -23,17 +23,15 @@ public:
     string GetFullNameWithHistory(int year) const;
 
 private:
-
-    static string GetName(const map<int, string>& names, const int year);
-    static string GetNameWithHistory(const map<int, string>& names, const int year);
-    static vector<string> MakeHistory(const map<int, string>& names, const int year);
-    static string JoinNames(const string& first_name, const string& last_name);
-
-private:
     int year_birth;
     map<int, string> fname;
     map<int, string> lname;
 };
+
+string GetName(const map<int, string>& names, const int year);
+string GetNameWithHistory(const map<int, string>& names, const int year);
+vector<string> MakeHistory(const map<int, string>& names, const int year);
+string JoinNames(const string& first_name, const string& last_name);
 
 
 #endif //INC_5_NAMES2_PERSON_H

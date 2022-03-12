@@ -26,25 +26,13 @@ bool operator<(const Region &lhs, const Region &rhs) {
            std::tie(rhs.std_name, rhs.parent_std_name, rhs.names, rhs.population);
 }
 
-std::map<Region, int> map_emplace(const std::vector<Region> &region) {
-    std::map<Region, int> map;
-
-    for (const Region &item: region) {
-        map[item]++;
-    }
-
-    return map;
-}
+using RegionBase = std::map<Region, int>;
 
 int FindMaxRepetitionCount(const std::vector<Region> &region) {
-    if (region.empty()) {
-        return 0;
-    }
-
     int count = 0;
-    std::map<Region, int> map = map_emplace(region);
-    for (const auto &item: map) {
-        if (item.second > count) count = item.second;
+    RegionBase base;
+    for (const auto &item: region) {
+        count = std::max(count, ++base[item]);
     }
 
     return count;
@@ -57,50 +45,50 @@ int main() {
                             "Moscow",
                             "Russia",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             89
                     },
                     {
                             "Russia",
                             "Eurasia",
                             {
-                                {Lang::DE, "Russland"},
-                                {Lang::FR, "Russie"},
-                                {Lang::IT, "Russia"}
-                                },
+                                    {Lang::DE, "Russland"},
+                                    {Lang::FR, "Russie"},
+                                    {Lang::IT, "Russia"}
+                            },
                             89
                     },
                     {
                             "Moscow",
                             "Russia",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             89
                     },
                     {
                             "Moscow",
                             "Russia",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             89
                     },
                     {
                             "Russia",
                             "Eurasia",
                             {
-                                {Lang::DE, "Russland"},
-                                {Lang::FR, "Russie"},
-                                {Lang::IT, "Russia"}
-                                },
+                                    {Lang::DE, "Russland"},
+                                    {Lang::FR, "Russie"},
+                                    {Lang::IT, "Russia"}
+                            },
                             89
                     },
             })
@@ -112,50 +100,50 @@ int main() {
                             "Moscow",
                             "Russia",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             89
                     },
                     {
                             "Russia",
                             "Eurasia",
                             {
-                                {Lang::DE, "Russland"},
-                                {Lang::FR, "Russie"},
-                                {Lang::IT, "Russia"}
-                                },
+                                    {Lang::DE, "Russland"},
+                                    {Lang::FR, "Russie"},
+                                    {Lang::IT, "Russia"}
+                            },
                             89
                     },
                     {
                             "Moscow",
                             "Russia",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou deux"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou deux"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             89
                     },
                     {
                             "Moscow",
                             "Toulouse",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             89
                     },
                     {
                             "Moscow",
                             "Russia",
                             {
-                                {Lang::DE, "Moskau"},
-                                {Lang::FR, "Moscou"},
-                                {Lang::IT, "Mosca"}
-                                },
+                                    {Lang::DE, "Moskau"},
+                                    {Lang::FR, "Moscou"},
+                                    {Lang::IT, "Mosca"}
+                            },
                             31
                     },
             })

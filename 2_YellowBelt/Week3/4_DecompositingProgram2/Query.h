@@ -1,7 +1,3 @@
-//
-// Created by cobak on 05.03.2022.
-//
-
 #ifndef INC_4_DECOMPOSITINGPROGRAM2_QUERY_H
 #define INC_4_DECOMPOSITINGPROGRAM2_QUERY_H
 

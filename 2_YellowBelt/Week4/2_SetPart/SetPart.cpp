@@ -2,28 +2,23 @@
 #include <vector>
 #include <set>
 #include <algorithm>
-using namespace std;
-
-using IT = std::vector<int>::const_iterator;
 
 template <typename T>
 std::vector<T> FindGreaterElements(const std::set<T>& elements, const T& border){
-    std::vector<T> vec;
-    for(const auto& item : elements){
-        if(item > border){
-            vec.push_back(std::move(item));
-        }
+    auto iter = elements.begin();
+    while(*iter > border && iter != elements.end()){
+        ++iter;
     }
-    return vec;
+    return {elements.begin(), iter};
 }
 
 int main(){
-    for (int x : FindGreaterElements(set<int>{6,7,8,2, 3,9,0}, 5)) {
-        cout << x << " ";
+    for (int x : FindGreaterElements(std::set<int>{6,7,8,2,3,9,0}, 5)) {
+        std::cout << x << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
 
-    string to_find = "C";
-    cout << FindGreaterElements(set<string>{"C", "C++"}, to_find).size() << endl;
+    std::string to_find = "C";
+    std::cout << FindGreaterElements(std::set<std::string>{"C", "C++"}, to_find).size() << std::endl;
     return 0;
 }

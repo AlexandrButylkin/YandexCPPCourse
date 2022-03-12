@@ -1,7 +1,6 @@
 #include "BusManager.h"
 
 void BusManager::AddBus(const string& bus, const vector<string>& stops) {
-    // Реализуйте этот метод
     buses_to_stops[bus] = stops;
     for (const auto& stop : stops) {
         stops_to_buses[stop].push_back(bus);
@@ -11,7 +10,7 @@ void BusManager::AddBus(const string& bus, const vector<string>& stops) {
 BusesForStopResponse BusManager::GetBusesForStop(const string& stop) const {
     BusesForStopResponse a;
     if (stops_to_buses.count(stop) == 0) {
-        a.Buses_For_Stop_Response.push_back ("No stop");
+        a.Buses_For_Stop_Response.emplace_back("No stop");
     }
     else {
         a.Buses_For_Stop_Response = stops_to_buses.at(stop);
@@ -46,7 +45,6 @@ StopsForBusResponse BusManager::GetStopsForBus(const string& bus) const {
 
 
 AllBusesResponse BusManager::GetAllBuses() const {
-    // Реализуйте этот метод
     AllBusesResponse a;
     if (!buses_to_stops.empty()) {
         for (const auto& bus_item : buses_to_stops) {

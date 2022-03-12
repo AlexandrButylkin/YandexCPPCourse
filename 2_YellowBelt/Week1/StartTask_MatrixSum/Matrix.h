@@ -7,7 +7,7 @@
 #include <vector>
 
 
-class Matrix{
+class Matrix final {
 private:
     std::vector<std::vector<int>> matrix;
     int num_rows_;

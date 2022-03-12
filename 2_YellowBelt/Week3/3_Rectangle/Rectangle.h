@@ -1,10 +1,7 @@
-//
-// Created by cobak on 05.03.2022.
-//
-
 #ifndef INC_3_RECTANGLE_RECTANGLE_H
 #define INC_3_RECTANGLE_RECTANGLE_H
 
+#include <stdexcept>
 
 class Rectangle {
 public:

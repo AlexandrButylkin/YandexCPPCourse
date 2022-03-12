@@ -3,18 +3,14 @@
 
 PhoneNumber::PhoneNumber(const string &international_number) {
     std::istringstream is(international_number);
-    if(international_number[0] == '+'){
-        is.ignore(1);
-    } else throw invalid_argument("Invalid argument: " + international_number);
+    char sign = is.get();
+    getline(is, country_code_, '-');
+    getline(is, city_code_, '-');
+    getline(is, local_number_);
 
-    if(!getline(is, country_code_, '-'))
+    if(sign != '+' || country_code_.empty() || city_code_.empty() || local_number_.empty()){
         throw invalid_argument("Invalid argument: " + international_number);
-
-    if(!getline(is, city_code_, '-'))
-        throw invalid_argument("Invalid argument: " + international_number);
-
-    if(!getline(is, local_number_))
-        throw invalid_argument("Invalid argument: " + international_number);
+    }
 }
 
 std::string PhoneNumber::GetCountryCode() const {return country_code_;}
@@ -25,5 +21,4 @@ std::string PhoneNumber::GetInternationalNumber() const {
     os << "+" << country_code_ << "-" << city_code_ << "-" << local_number_;
     return std::move(os.str());
 }
-
 

@@ -9,9 +9,10 @@ template <typename T, typename  N> N& GetRefStrict(const std::map<T, N>& map, co
 
 template <typename T, typename N>
 N& GetRefStrict(std::map<T, N>& map, const T& key){
-    if(map.find(key) != map.end()){
-        return map.at(key);
-    } else throw runtime_error("runtime_error: GetRefStrict");
+    const auto iter = map.find(key);
+    if(iter != map.end()){
+        return iter->second;
+    } else throw runtime_error("Key not found");
 }
 
 int main(){

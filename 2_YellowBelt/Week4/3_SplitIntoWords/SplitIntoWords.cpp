@@ -1,23 +1,29 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+
 using namespace std;
 
-vector<string> SplitIntoWords(const string& s){
-    if(s == "") return {};
-    std::vector<string> vec;
-    std::string str;
-    for(auto it = s.begin(); it <= s.end(); ++it){
-        if(*it == ' ' || it == s.end()){
-            vec.push_back(std::move(str));
-            str = "";
-        } else str += *it;
+vector<string> SplitIntoWords(const string& str) {
+    vector<string> result;
+    auto str_begin = begin(str);
+    const auto str_end = end(str);
+    while (true) {
+        auto it = find(str_begin, str_end, ' ');
+        result.emplace_back(str_begin, it);
+        if (it == str_end) {
+            break;
+        } else {
+            str_begin = it + 1;
+        }
+
     }
-    return vec;
+
+    return result;
 }
 
-int main(){
-    string s = "";
+int main() {
+    string s = "C Cpp Java Python";
 
     vector<string> words = SplitIntoWords(s);
     cout << words.size() << " ";
@@ -28,5 +34,6 @@ int main(){
         cout << *it;
     }
     cout << endl;
+
     return 0;
 }

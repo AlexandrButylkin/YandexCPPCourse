@@ -9,7 +9,6 @@ ostream& operator << (ostream& os, const BusesForStopResponse& r) {
 }
 
 ostream& operator << (ostream& os, const StopsForBusResponse& r) {
-    // Реализуйте эту функцию
     if (r.Stops_Response.empty()) {
         os << "No bus";
     }
@@ -29,8 +28,6 @@ ostream& operator << (ostream& os, const StopsForBusResponse& r) {
 }
 
 ostream& operator << (ostream& os, const AllBusesResponse& r) {
-    // Реализуйте эту функцию
-
     if (r.All_Buses_Response.empty()) {
         os << "No buses";
     }
