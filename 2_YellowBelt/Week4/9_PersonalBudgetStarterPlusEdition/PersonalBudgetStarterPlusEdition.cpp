@@ -4,7 +4,7 @@
 #include <numeric>
 #include <sstream>
 
-struct Date {
+struct Date final {
     int year = 0;
     int month = 0;
     int day = 0;
@@ -24,7 +24,7 @@ std::istream& operator>>(std::istream& is, Date& date){
     return is;
 }
 
-static int MonthToIndex(int month, bool is_leap) {
+int MonthToIndex(int month, bool is_leap) {
     int res = 0;
     if(is_leap && month > 1) res += 1;
 
@@ -38,7 +38,7 @@ static int MonthToIndex(int month, bool is_leap) {
     if(month == 11) return res - 7;
 }
 
-static int DateToIndex(const Date& date) {
+int DateToIndex(const Date& date) {
     int res = 0;
 
     res += date.year * 365;
@@ -55,7 +55,7 @@ static int DateToIndex(const Date& date) {
     return res;
 }
 
-class Budget{
+class Budget final {
 public:
 
     std::array<size_t, 146101> data;
@@ -110,111 +110,3 @@ int main() {
     b.GetAllIncome();
     return 0;
 }
-
-/*
-class Budget{
-public:
-    Budget(std::istream& input, std::ostream& output) : is(input), os(output) {}
-
-    void GetAllData(){
-        size_t count = 0;
-        is >> count;
-        std::cerr << count << "\n";
-
-
-        while(count > 0){
-            std::string date;
-            size_t value;
-
-            is >> date >> value;
-            std::cerr << date << " " << value << "\n";
-
-
-            data[date] += value;
-
-            --count;
-        }
-
-        IncomeToPartialSum();
-
-    }
-
-    void GetAllIncome(){
-        size_t count = 0;
-        is >> count;
-        std::cerr << count << "\n";
-
-
-        while(count != 0) {
-
-            std::string date1, date2;
-            is >> date1 >> date2;
-
-            std::cerr << date1 << " " << date2 << "\n";
-
-            os << GetIncome(date1, date2) << std::endl;
-
-            --count;
-        }
-
-    }
-
-
-
-private:
-
-    void IncomeToPartialSum(){
-        std::vector<size_t> vec;
-        vec.reserve(data.size());
-
-        for(const auto& item : data){
-            vec.emplace_back(item.second);
-        }
-
-        std::partial_sum(vec.begin(), vec.end(), vec.begin());
-
-        auto iter_data = data.begin();
-        auto iter_vec = vec.begin();
-
-        while(iter_data != data.end() && iter_vec != vec.end()){
-
-            iter_data++->second = *iter_vec++;
-
-        }
-    }
-
-    size_t GetIncome(const std::string& date1, const std::string& date2) const{
-        size_t first = 0, second = 0;
-
-        auto iter_date1 = data.lower_bound(date1);
-        auto iter_date2 = data.lower_bound(date2);
-
-        if(iter_date1->first == date1 && iter_date1 != data.begin()){
-            first = (--iter_date1)->second;
-        }
-
-        if(iter_date2->first != date2 || iter_date2 == data.end()){
-            --iter_date2;
-        }
-        second = iter_date2->second;
-
-        return second - first;
-    }
-
-private:
-
-    std::map<std::string, size_t> data;
-
-    std::istream& is;
-    std::ostream& os;
-
-};
-
-int main() {
-    std::vector<int> a(1);
-    Budget b(std::cin, std::cout);
-    b.GetAllData();
-    b.GetAllIncome();
-    std::cout << a[2];
-    return 0;
-}*/

@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-class Rectangle {
+class Rectangle final {
 public:
     Rectangle(int width, int height);
 

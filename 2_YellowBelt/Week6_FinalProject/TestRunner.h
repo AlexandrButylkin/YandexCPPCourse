@@ -1,5 +1,5 @@
-#ifndef TASL_2_TESTS_GETDISTINCTREALROOTCOUNT__TESTRUNNER_H
-#define TASL_2_TESTS_GETDISTINCTREALROOTCOUNT__TESTRUNNER_H
+#ifndef WEEK6_TESTRUNNER_H
+#define WEEK6_TESTRUNNER_H
 
 #include <iostream>
 #include <map>
@@ -64,21 +64,21 @@ void AssertEqual(const T& t, const U& u, const std::string& hint = {}) {
     }
 }
 
-void Assert(bool b, const std::string& hint) {
-    AssertEqual(b, true, hint);
-}
+void Assert(bool b, const std::string& hint);
 
-class TestRunner final {
+class TestRunner {
 public:
     template <class TestFunc>
-    void RunTest(TestFunc func, const std::string& test_name) {
+    void RunTest(TestFunc func, const std::string& test_name, bool skip_exception = false) {
         try {
             func();
             std::cerr << test_name << " OK" << std::endl;
         } catch (std::exception& e) {
+            if(skip_exception) throw e;
             ++fail_count;
             std::cerr << test_name << " fail: " << e.what() << std::endl;
         } catch (...) {
+            if(skip_exception) throw;
             ++fail_count;
             std::cerr << "Unknown exception caught" << std::endl;
         }
@@ -95,4 +95,4 @@ private:
     int fail_count = 0;
 };
 
-#endif //TASL_2_TESTS_GETDISTINCTREALROOTCOUNT__TESTRUNNER_H
+#endif //WEEK6_TESTRUNNER_H

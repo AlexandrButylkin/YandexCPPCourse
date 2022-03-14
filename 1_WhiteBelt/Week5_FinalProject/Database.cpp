@@ -21,8 +21,8 @@ int Date::GetDay() const {
 
 std::ostream& operator<<(std::ostream& os, const Date& date){
     os << std::setw(4) << std::setfill('0') << date.GetYear() << "-";
-    std::cout << std::setw(2) << std::setfill('0') << date.GetMonth() << "-";
-    std::cout << std::setw(2) << std::setfill('0') << date.GetDay();
+    os << std::setw(2) << std::setfill('0') << date.GetMonth() << "-";
+    os << std::setw(2) << std::setfill('0') << date.GetDay();
     return os;
 }
 

@@ -5,7 +5,9 @@
 using namespace std;
 
 template <class It>
-shared_ptr<Node> ParseComparison(It& current, It end) {
+shared_ptr<Nodes::Base> ParseComparison(It& current, It end) {
+    using Nodes::Comparison;
+
     if (current == end) {
         throw logic_error("Expected column name: date or event");
     }
@@ -52,19 +54,19 @@ shared_ptr<Node> ParseComparison(It& current, It end) {
 
     if (column.value == "date") {
         istringstream is(value);
-        return make_shared<DateComparisonNode>(cmp, ParseDate(is));
+        return make_shared<Nodes::DateComparison>(cmp, ParseDate(is));
     } else {
-        return make_shared<EventComparisonNode>(cmp, value);
+        return make_shared<Nodes::EventComparison>(cmp, value);
     }
 }
 
 template <class It>
-shared_ptr<Node> ParseExpression(It& current, It end, unsigned precedence) {
+shared_ptr<Nodes::Base> ParseExpression(It& current, It end, unsigned precedence) {
     if (current == end) {
-        return shared_ptr<Node>();
+        return {};
     }
 
-    shared_ptr<Node> left;
+    shared_ptr<Nodes::Base> left;
 
     if (current->type == TokenType::PAREN_LEFT) {
         ++current; // consume '('
@@ -95,7 +97,7 @@ shared_ptr<Node> ParseExpression(It& current, It end, unsigned precedence) {
 
         ++current; // consume op
 
-        left = make_shared<LogicalOperationNode>(
+        left = make_shared<Nodes::LogicalOperationNode>(
                 logical_operation, left, ParseExpression(current, end, current_precedence)
         );
     }
@@ -103,13 +105,13 @@ shared_ptr<Node> ParseExpression(It& current, It end, unsigned precedence) {
     return left;
 }
 
-shared_ptr<Node> ParseCondition(istream& is) {
+shared_ptr<Nodes::Base> ParseCondition(istream& is) {
     auto tokens = Tokenize(is);
     auto current = tokens.begin();
     auto top_node = ParseExpression(current, tokens.end(), 0u);
 
     if (!top_node) {
-        top_node = make_shared<EmptyNode>();
+        top_node = make_shared<Nodes::Empty>();
     }
 
     if (current != tokens.end()) {

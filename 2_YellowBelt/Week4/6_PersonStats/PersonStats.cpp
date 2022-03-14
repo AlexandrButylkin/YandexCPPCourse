@@ -7,10 +7,10 @@ enum class Gender {
     MALE
 };
 
-struct Person {
-    int age;  // возраст
-    Gender gender;  // пол
-    bool is_employed;  // имеет ли работу
+struct Person final {
+    int age;
+    Gender gender;
+    bool is_employed;
 };
 
 template <typename InputIt>
@@ -33,7 +33,7 @@ bool operator<(const Person& lhs, const Person& rhs){
     return lhs.is_employed < rhs.is_employed;
 }
 
-struct PersonIters {
+struct PersonIters final {
     vector<Person>::iterator female_end;
     vector<Person>::iterator female_employ_end;
     vector<Person>::iterator male_employ_end;

@@ -2,44 +2,49 @@
 #define WEEK6_DATE_H
 #include <sstream>
 
-struct Year {
-    explicit Year(int year_) : year(year_) {}
-    int year;
+struct Year final {
+    int year_;
+    explicit Year(int year) : year_(year) {}
 };
 
-struct Month {
-    explicit Month(int month_) : month(month_) {}
-    int month;
+struct Month final {
+    int month_;
+    explicit Month(int month) : month_(month) {}
 };
 
-struct Day {
-    explicit Day(int day_) : day(day_) {}
-    int day;
+struct Day final {
+    int day_;
+    explicit Day(int day) : day_(day) {}
 };
 
-class Date {
+class Date final {
 public:
-    explicit Date(Year year_, Month month_, Day day_) : year(year_), month(month_), day(day_){}
+    Date() : year_(Year(0)), month_(Month(0)), day_(Day(0)){};
+    Date(const Year& year, const Month& month, const Day& day) : year_(year), month_(month), day_(day){}
 
-    [[nodiscard]] int getYear() const {return year.year;}
-    [[nodiscard]] int getMonth() const {return month.month;}
-    [[nodiscard]] int getDay() const {return day.day;}
-
-    friend std::ostream& operator<< (std::ostream& os, const Date& date);
-    friend bool operator==(const Date& lhs, const Date& rhs);
-    friend bool operator!=(const Date& lhs, const Date& rhs);
-    friend bool operator<(const Date& lhs, const Date& rhs);
-    friend bool operator>(const Date& lhs, const Date& rhs);
-    friend bool operator<=(const Date& lhs, const Date& rhs);
-    friend bool operator>=(const Date& lhs, const Date& rhs);
-
+    int GetYear() const {return year_.year_;}
+    int GetMonth() const {return month_.month_;}
+    int GetDay() const {return day_.day_;}
 
 private:
-    Year year;
-    Month month;
-    Day day;
+    Year year_;
+    Month month_;
+    Day day_;
 };
 
+std::ostream& operator<< (std::ostream& os, const Date& date);
+
+bool operator==(const Date& lhs, const Date& rhs);
+bool operator<(const Date& lhs, const Date& rhs);
+bool operator!=(const Date& lhs, const Date& rhs);
+bool operator>(const Date& lhs, const Date& rhs);
+bool operator<=(const Date& lhs, const Date& rhs);
+bool operator>=(const Date& lhs, const Date& rhs);
+
 Date ParseDate(std::istream& is);
+
+//TESTS
+void TestDateOutput();
+void TestParseDate();
 
 #endif //WEEK6_DATE_H

@@ -8,7 +8,7 @@
 #include "Query.h"
 #include "Responses.h"
 
-class BusManager {
+class BusManager final {
 private:
     map<string, vector<string>> buses_to_stops, stops_to_buses;
 

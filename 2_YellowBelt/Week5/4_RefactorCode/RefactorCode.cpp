@@ -18,6 +18,8 @@ public:
     std::string GetName() const { return Name; }
     std::string GetType() const { return Type; }
 
+    virtual ~Person() = default;
+
 protected:
     const std::string Name;
     const std::string Type;

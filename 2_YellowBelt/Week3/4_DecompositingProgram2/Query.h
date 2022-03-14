@@ -7,7 +7,7 @@
 #include <sstream>
 using namespace std;
 
-enum class QueryType {
+enum class QueryType final {
     NewBus,
     BusesForStop,
     StopsForBus,

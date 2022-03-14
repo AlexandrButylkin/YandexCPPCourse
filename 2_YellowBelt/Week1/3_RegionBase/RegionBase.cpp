@@ -9,7 +9,7 @@ enum class Lang {
     IT = 2
 };
 
-struct Region {
+struct Region final {
     std::string std_name;
     std::string parent_std_name;
     std::map<Lang, std::string> names;

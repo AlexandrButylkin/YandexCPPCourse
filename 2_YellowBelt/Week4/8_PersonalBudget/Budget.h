@@ -15,10 +15,10 @@ std::istream& operator>>(std::istream& is, Date& date);
 int MonthToIndex(int month, bool is_leap);
 int DateToIndex(const Date& date);
 
-class Budget{
+class Budget final {
 public:
 
-    struct Statistic{
+    struct Statistic final {
         double income = 0;
         double expenses = 0;
     };

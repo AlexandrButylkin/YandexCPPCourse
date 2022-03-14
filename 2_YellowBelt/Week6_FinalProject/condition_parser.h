@@ -1,16 +1,14 @@
 #ifndef WEEK6_CONDITION_PARSER_H
 #define WEEK6_CONDITION_PARSER_H
 
+#include "node.h"
 
 #include <memory>
 #include <iostream>
 
-#include "node.h"
+std::shared_ptr<Nodes::Base> ParseCondition(std::istream& is);
 
-using namespace std;
-
-shared_ptr<Node> ParseCondition(istream& is);
-
+//TESTS
 void TestParseCondition();
 
 

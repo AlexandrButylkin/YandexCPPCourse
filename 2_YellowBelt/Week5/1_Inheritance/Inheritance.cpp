@@ -4,7 +4,8 @@ using namespace std;
 class Animal {
 public:
     explicit Animal(const std::string& name) : Name(name){}
-
+    virtual ~Animal() = default;
+private:
     const string Name;
 };
 
@@ -19,7 +20,7 @@ public:
 };
 
 int main() {
-    Dog dog("Sasha");
+    Dog dog("Bobik");
     dog.Bark();
     return 0;
 }

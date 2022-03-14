@@ -1,7 +1,3 @@
-//
-// Created by cobak on 05.03.2022.
-//
-
 #include "BusManager.h"
 
 istream& operator >> (istream& is, Query& q) {

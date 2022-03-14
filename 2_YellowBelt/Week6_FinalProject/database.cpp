@@ -1,68 +1,45 @@
 #include "database.h"
-#include <algorithm>
-#include <iostream>
-void Database::Add(const Date& date, const std::string& event){
-    if(database.find(date) != database.end()){
-        if(database[date].set.find(event) == database[date].set.end()){
-            database[date].vec.emplace_back(event);
-            database[date].set.emplace(event);
-        }
-    } else {
-        database[date].vec.emplace_back(event);
-        database[date].set.emplace(event);
+#include <stdexcept>
+
+
+std::ostream& operator<<(std::ostream& os, const Entrie& data){
+    os << data.first << " " << data.second;
+    return os;
+}
+
+void Events::Add(const std::string &event) {
+    const auto inserted = ordered_events.emplace(event);
+    if(inserted.second){
+        events.emplace_back(event);
     }
 }
 
-/*template <typename T>
-std::ostream& operator<<(std:: ostream& os, const std::set<T>& st){
-    bool first = true;
-    for (const auto &item: st) {
-        if (!first) {
-            os << " ";
-        }
-        first = false;
-        os << item;
-    }
-    return os;
-}*/
+const std::deque<std::string> &Events::GetEvents() const {
+    return events;
+}
 
+
+void Database::Add(const Date& date, const std::string& event){
+    database[date].Add(event);
+}
 
 std::ostream& Database::Print(std::ostream& os) const{
-    for(const auto& mItem : database){
-        for(const auto& sItem : mItem.second.vec){
-            os << mItem.first << " ";
-            os << sItem << std::endl;
+    for(const auto& [date, events] : database){
+        for(const auto& event : events.GetEvents()){
+            os << date << " ";
+            os << event << "\n";
         }
     }
     return os;
 }
 
-std::string Database::Last(const Date& date) const{
-    if(database.empty()) return "No entries";
-    if (date < database.begin()->first) return "No entries";
+Entrie Database::Last(const Date& date) const{
+    auto date_iter = database.upper_bound(date);
 
-    std::ostringstream os;
-    auto it = database.find(date);
-
-    if(it == database.end()){
-        it = database.lower_bound(date);
-        --it;
+    if(date_iter == database.begin()){
+        throw std::invalid_argument("");
+    } else {
+        date_iter = std::prev(date_iter);
     }
-
-    os << it->first << " " << it->second.vec.back();
-    return os.str();
-
-
-
-    /*if(!database.empty()) {
-        if (date < database.begin()->first) return "No entries";
-
-        for (auto it = database.rbegin(); it != database.rend(); ++it) {
-            if (it->first <= date) {
-                std::ostringstream os;
-                os << it->first << " " << *(it->second.rbegin());
-                return os.str();
-            }
-        }
-    } else return "No entries";*/
+    return {date_iter->first, date_iter->second.GetEvents().back()};
 }

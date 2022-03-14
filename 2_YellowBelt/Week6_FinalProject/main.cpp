@@ -1,13 +1,6 @@
 #include "database.h"
-#include "date.h"
 #include "condition_parser.h"
-#include "node.h"
-#include "test_runner.h"
-
-
-#include <iostream>
-#include <stdexcept>
-#include <sstream>
+#include "Tests.h"
 
 template <typename T, typename N>
 std::ostream& operator<<(std::ostream& os,const std::pair<T, N>& pair){
@@ -16,6 +9,7 @@ std::ostream& operator<<(std::ostream& os,const std::pair<T, N>& pair){
 }
 
 using namespace std;
+
 string ParseEvent(istream& is) {
     is >> ws;
     std::string event;
@@ -24,6 +18,8 @@ string ParseEvent(istream& is) {
 }
 
 int main() {
+    Tests();
+
     Database db;
 
     for (string line; getline(cin, line); ) {
@@ -69,30 +65,3 @@ int main() {
 
     return 0;
 }
-
-
-/*#include <iostream>
-#include <stdexcept>
-#include <sstream>
-
-std::string ParseEvent(std::istream& is) {
-    is >> std::ws;
-    std::string event;
-    getline(is, event);
-    return event;
-}
-
-#include "date.h"
-#include "condition_parser.h"
-#include "node.h"
-#include "database.h"
-#include "token.h"
-#include "test_runner.h"
-#include "MyTests.h"
-
-
-
-int main(){
-    TEST_PARSE_CONDITION();
-    return 0;
-}*/

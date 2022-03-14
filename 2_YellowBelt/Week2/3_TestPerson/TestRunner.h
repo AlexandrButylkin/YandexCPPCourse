@@ -68,7 +68,7 @@ void Assert(bool b, const std::string& hint) {
     AssertEqual(b, true, hint);
 }
 
-class TestRunner {
+class TestRunner final {
 public:
     template <class TestFunc>
     void RunTest(TestFunc func, const std::string& test_name) {

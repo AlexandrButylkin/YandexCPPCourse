@@ -21,23 +21,23 @@ enum class QueryType {
     AllBuses
 };
 
-struct Query {
+struct Query final {
     QueryType type;
     string bus;
     string stop;
     vector<string> stops;
 };
 
-struct BusesForStopResponse {
+struct BusesForStopResponse final {
     vector<string> buses;
 };
 
-struct StopsForBusResponse {
+struct StopsForBusResponse final {
     string bus;
     vector<pair<string, vector<string>>> stops_for_buses;
 };
 
-struct AllBusesResponse {
+struct AllBusesResponse final {
     map<string, vector<string>> buses_to_stops;
 };
 
@@ -46,7 +46,7 @@ ostream& operator << (ostream& os, const BusesForStopResponse& r);
 ostream& operator << (ostream& os, const StopsForBusResponse& r);
 ostream& operator << (ostream& os, const AllBusesResponse& r);
 
-class BusManager {
+class BusManager final {
 public:
 
     void AddBus(const string& bus, const vector<string>& stops);

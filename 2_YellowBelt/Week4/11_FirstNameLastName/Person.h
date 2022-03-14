@@ -5,8 +5,7 @@
 #include <iostream>
 #include <map>
 
-class Person
-{
+class Person final {
 public:
     void ChangeFirstName(int year, const std::string &first_name);
     void ChangeLastName(int year, const std::string &last_name);

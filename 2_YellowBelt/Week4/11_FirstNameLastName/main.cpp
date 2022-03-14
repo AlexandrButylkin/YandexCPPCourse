@@ -3,49 +3,6 @@
 
 using namespace std;
 
-/*class Person {
-public:
-    void ChangeFirstName(int year, const std::string &first_name){
-        fname[year] = first_name;
-    }
-
-    void ChangeLastName(int year, const std::string &last_name){
-        lname[year] = last_name;
-    }
-
-    std::string GetFullName(int year) const {
-        std::string last_name = GetName(lname, year);
-        std::string first_name = GetName(fname, year);
-
-        if(last_name.empty() && first_name.empty()){
-            return "Incognito";
-        } else if (last_name.empty() && !first_name.empty()){
-            return first_name + " with unknown last name";
-        } else if (!last_name.empty() && first_name.empty()){
-            return last_name + " with unknown first name";
-        } else {
-            return first_name + " " + last_name;
-        }
-    }
-
-private:
-    static std::string GetName(const std::map<int, std::string>& names, const int& year){
-        auto iter_name = names.upper_bound(year);
-
-        if(iter_name == names.begin()){
-            return "";
-        } else {
-
-            return std::prev(iter_name)->second;
-        }
-    }
-
-private:
-    std::map<int, std::string> fname;
-    std::map<int, std::string> lname;
-};*/
-
-
 int main() {
 
     {

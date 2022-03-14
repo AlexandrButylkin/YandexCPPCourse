@@ -12,16 +12,16 @@
 
 using namespace std;
 
-struct BusesForStopResponse {
+struct BusesForStopResponse final {
     vector<string > Buses_For_Stop_Response;
 };
 
-struct StopsForBusResponse {
+struct StopsForBusResponse final {
     vector <string> Stops_Response;
     vector< vector <string>> Bus_Response;
 };
 
-struct AllBusesResponse {
+struct AllBusesResponse final {
     map<string, vector<string>> All_Buses_Response;
 };
 
