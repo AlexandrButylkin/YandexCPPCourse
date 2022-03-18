@@ -1,4 +1,4 @@
-#include "../test_runner/test_runner.h"
+#include "../../Utils/TestRunner.h"
 #include <sstream>
 #include <string>
 using namespace std;
@@ -11,38 +11,38 @@ public:
     void SetLogLine(bool value) { log_line = value; }
     void SetLogFile(bool value) { log_file = value; }
 
-    void Log(const string &message) { os << message << std::endl; };
+    void SetFile(const string& filename) { file = filename; }
+    void SetLine(int line_number) { line = line_number; }
 
-    bool getLogLine() const {return log_line;}
-    bool getLogFile() const {return log_file;}
+    void Log(const string &message) {
+        if (log_file && log_line) {
+            os << file << ':' << line << ' ';
+        } else if (log_file) {
+            os << file << ' ';
+        } else if (log_line) {
+            os << "Line " << line << ' ';
+        }
+        os << message << '\n';
+    };
+
 
 private:
     ostream &os;
     bool log_line = false;
     bool log_file = false;
+
+    string file;
+    int line {};
 };
 
-#define LOG(logger, message) {                                                                          \
-    std::ostringstream os;                                                                              \
-    if(logger.getLogFile() && logger.getLogLine()) os << __FILE__ << ":" << __LINE__ << " " << message; \
-    else if(!logger.getLogFile() && logger.getLogLine()) os << "Line " << __LINE__  << " " << message;  \
-    else if(logger.getLogFile() && !logger.getLogLine()) os << __FILE__  << " " << message;             \
-    else if(!logger.getLogFile() && !logger.getLogLine()) os << message;                                \
-    logger.Log(os.str());                                                                               \
-}
+
+#define LOG(logger, message)    \
+  (logger).SetFile(__FILE__);   \
+  (logger).SetLine(__LINE__);   \
+  (logger).Log(message);
 
 void TestLog()
 {
-/* Для написания юнит-тестов в этой задаче нам нужно фиксировать конкретные
- * номера строк в ожидаемом значении (см. переменную expected ниже). Если
- * мы добавляем какой-то код выше функции TestLog, то эти номера строк меняются,
- * и наш тест начинает падать. Это неудобно.
- *
- * Чтобы этого избежать, мы используем специальный макрос #line
- * (http://en.cppreference.com/w/cpp/preprocessor/line), который позволяет
- * переопределить номер строки, а также имя файла. Благодаря ему, номера
- * строк внутри функции TestLog будут фиксированы независимо от того, какой
- * код мы добавляем перед ней*/
 #line 1 "logger.cpp"
 
     ostringstream logs;
@@ -70,50 +70,3 @@ int main()
     TestRunner tr;
     RUN_TEST(tr, TestLog);
 }
-/*
-#include <string>
-#include <ostream>
-using namespace std;
-
-class Logger {
-public:
-  explicit Logger(ostream& output_stream) : os(output_stream) {
-  }
-
-  void SetLogLine(bool value) { log_line = value; }
-  void SetLogFile(bool value) { log_file= value; }
-
-  void Log(const string& message);
-
-  void SetFile(const string& filename) {
-    file = filename;
-  }
-
-  void SetLine(int line_number) {
-    line = line_number;
-  }
-
-private:
-  ostream& os;
-  bool log_line = false;
-  bool log_file = false;
-  string file;
-  int line;
-};
-
-void Logger::Log(const string& message) {
-  if (log_file && log_line) {
-    os << file << ':' << line << ' ';
-  } else if (log_file) {
-    os << file << ' ';
-  } else if (log_line) {
-    os << "Line " << line << ' ';
-  }
-  os << message << '\n';
-}
-
-#define LOG(logger, message) \
-  logger.SetFile(__FILE__);  \
-  logger.SetLine(__LINE__);  \
-  logger.Log(message);
-*/

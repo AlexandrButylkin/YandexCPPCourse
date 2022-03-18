@@ -73,7 +73,6 @@ void TestReverseCopy() {
   const vector<int> expected1 = {7, 6, 5, 4, 3, 2, 1};
   ASSERT_EQUAL(vector<int>(dest, dest + count), expected1);
 
-  // РћР±Р»Р°СЃС‚Рё РїР°РјСЏС‚Рё РјРѕРіСѓС‚ РїРµСЂРµРєСЂС‹РІР°С‚СЊСЃСЏ
   ReversedCopy(source, count - 1, source + 1);
   const vector<int> expected2 = {1, 6, 5, 4, 3, 2, 1};
   ASSERT_EQUAL(vector<int>(source, source + count), expected2);

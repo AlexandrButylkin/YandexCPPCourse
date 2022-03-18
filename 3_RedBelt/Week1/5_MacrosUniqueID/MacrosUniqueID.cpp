@@ -1,15 +1,14 @@
-//#include <string>
-//#include <vector>
-/*#include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
 #define MYCONC(x, y) x##y
 #define MYLINE(x, y) MYCONC(x, y)
-#define UNIQ_ID MYLINE(var, __LINE__)*/
+#define UNIQ_ID MYLINE(var, __LINE__)
 
-void foo(int a);
-
-int main()
-{
-    return 0;
+int main() {
+    int UNIQ_ID = 0;
+    string UNIQ_ID = "hello";
+    vector<string> UNIQ_ID = {"hello", "world"};
+    vector<int> UNIQ_ID = {1, 2, 3, 4};
 }

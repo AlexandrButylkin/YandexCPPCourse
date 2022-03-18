@@ -2,7 +2,7 @@
 
 #include <map>
 #include <string>
-#include "C:\Users\cobak\CLionProjects\red_belt\profiler\MyProfiler.h"
+#include "../../Utils/Profiller.h"
 
 using namespace std;
 

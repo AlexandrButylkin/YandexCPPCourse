@@ -1,11 +1,10 @@
-#include "test_runer.h"
+#include "../../Utils/TestRunner.h"
+#include "Paginator.h"
 
 #include <numeric>
 #include <iostream>
 #include <vector>
 #include <string>
-#include "Paginator.h"
-using namespace std;
 
 void TestPageCounts() {
     vector<int> v(15);
@@ -106,5 +105,4 @@ int main() {
     RUN_TEST(tr, TestConstContainer);
     RUN_TEST(tr, TestPagePagination);
     return 0;
-
 }

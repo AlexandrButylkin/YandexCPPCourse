@@ -1,15 +1,13 @@
+#include "Student.h"
+#include "../../Utils/TestRunner.h"
+
 #include <algorithm>
 #include <vector>
 #include <sstream>
 
-#include "student.h"
-#include "test_runner.h"
-
 using namespace std;
 
-//РћРїС‚РёРјРёР·РёСЂСѓР№С‚Рµ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ
 bool Compare(const Student& first, const Student& second) {
-    //LOG_DURATION("Compare");
     return first.Less(second);
 }
 

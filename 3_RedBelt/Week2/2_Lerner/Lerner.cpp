@@ -19,7 +19,7 @@ int main() {
         cout << learner.Learn(words) << "\n";
     }
     cout << "=== known words ===\n";
-    for (auto word : learner.KnownWords()) {
+    for (const auto& word : learner.KnownWords()) {
         cout << word << "\n";
     }
 }

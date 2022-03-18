@@ -6,22 +6,22 @@
 #include <iostream>
 #include <string>
 
-#include "operatorOut.h"
+#include "OperatorsOut.h"
 
 using namespace std;
 
-#define ASSERT_EQUAL(x, y) {            \
-  ostringstream osForTests;                     \
-  osForTests << #x << " != " << #y << ", "      \
-    << __FILE__ << ":" << __LINE__;     \
-  AssertEqual(x, y, osForTests.str());          \
+#define ASSERT_EQUAL(x, y) {                \
+  ostringstream osForTests;                 \
+  osForTests << #x << " != " << #y << ", "  \
+    << __FILE__ << ":" << __LINE__;         \
+  AssertEqual(x, y, osForTests.str());      \
 }
 
 #define ASSERT(x) {                     \
-  ostringstream os;                     \
-  os << #x << " is false, "             \
+  ostringstream osForTests;             \
+  osForTests << #x << " is false, "     \
     << __FILE__ << ":" << __LINE__;     \
-  Assert(x, os.str());                  \
+  Assert(x, osForTests.str());          \
 }
 
 #define RUN_TEST(tr, func)              \

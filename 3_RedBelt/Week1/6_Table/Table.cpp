@@ -1,8 +1,5 @@
-#include "test_runer.h"
+#include "../../Utils/TestRunner.h"
 #include "Table.h"
-using namespace std;
-
-// Р РµР°Р»РёР·СѓР№С‚Рµ Р·РґРµСЃСЊ С€Р°Р±Р»РѕРЅРЅС‹Р№ РєР»Р°СЃСЃ Table
 
 void TestTable() {
     Table<int> t(1, 1);
