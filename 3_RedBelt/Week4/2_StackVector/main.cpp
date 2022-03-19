@@ -1,12 +1,10 @@
-#include <iostream>
+#include "StackVector.h"
+#include "../../Utils/TestRunner.h"
+#include "../../Utils/Profiller.h"
 
-#include "stack_vector.h"
-
-#include "test_runner.h"
-#include "C:\Users\cobak\CLionProjects\red_belt\profiler\MyProfiler.h"
-
-#include <random>
 #include <stdexcept>
+#include <random>
+
 using namespace std;
 
 void TestConstruction() {

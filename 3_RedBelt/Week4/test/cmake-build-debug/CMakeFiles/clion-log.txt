@@ -1,1 +1,0 @@
-CMakeLists.txt not found in C:\Users\cobak\GitHub\YandexCPPCourse\RedBelt\Week4\test Select CMakeLists.txt

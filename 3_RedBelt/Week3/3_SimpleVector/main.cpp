@@ -1,10 +1,5 @@
-#include <algorithm>
-#include <iostream>
-#include <vector>
-#include <string>
-
-#include "simple_vector.h"
-#include "test_runner.h"
+#include "SimpleVector.h"
+#include "../../Utils/TestRunner.h"
 
 using namespace std;
 
@@ -15,6 +10,7 @@ void TestConstruction() {
     ASSERT(empty.begin() == empty.end());
 
     SimpleVector<string> five_strings(5);
+    auto i = five_strings.Size();
     ASSERT_EQUAL(five_strings.Size(), 5u);
     ASSERT(five_strings.Size() <= five_strings.Capacity());
     for (auto& item : five_strings) {
@@ -47,3 +43,4 @@ int main() {
     RUN_TEST(tr, TestPushBack);
     return 0;
 }
+

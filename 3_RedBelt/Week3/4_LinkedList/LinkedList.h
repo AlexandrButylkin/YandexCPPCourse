@@ -7,10 +7,9 @@ class LinkedList {
 public:
     struct Node {
         T value;
-        Node* next = nullptr;
+        Node* next;
 
         explicit Node(const T& value) : value(value), next(nullptr) {}
-
     };
 
     void PushFront(const T& value) {
@@ -25,7 +24,9 @@ public:
     };
 
     void InsertAfter(Node* node, const T& value){
-        if(node == nullptr) PushFront(value);
+        if(node == nullptr) {
+            PushFront(value);
+        }
         else {
             Node *new_node = new Node(value);
             new_node->next = node->next;
@@ -42,26 +43,22 @@ public:
     }
 
     void RemoveAfter(Node* node){
-        if(node == nullptr) PopFront();
+        if(node == nullptr) {
+            PopFront();
+        }
         else if(node->next != nullptr){
             auto item = node->next;
-            node->next = node->next->next;
+            node->next = item->next;
             delete item;
         }
     }
 
-
-
-
     Node* GetHead() { return head; }
     const Node* GetHead() const { return head; }
 
-
     ~LinkedList(){
         while(head != nullptr){
-            auto item = head->next;
-            delete head;
-            head = item;
+            PopFront();
         }
     }
 
