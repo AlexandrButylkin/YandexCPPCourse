@@ -1,22 +1,10 @@
-#include "test_runner.h"
+#include "../../Utils/TestRunner.h"
 #include <algorithm>
-#include <memory>
 #include <vector>
 
 using namespace std;
 
 
-/*template <typename RandomIt, typename T>
-void Merge(RandomIt range_begin, RandomIt range_end) {
-    RandomIt middle = range_begin + (range_end - range_begin) / 2;
-
-    back_inserter(range_begin);
-
-    while(range_begin != range_end){
-
-    }
-
-}*/
 
 template <typename RandomIt>
 void MergeSort(RandomIt range_begin, RandomIt range_end) {
@@ -25,7 +13,7 @@ void MergeSort(RandomIt range_begin, RandomIt range_end) {
         std::vector<typename RandomIt::value_type> vec_start(
                 make_move_iterator(range_begin),
                 make_move_iterator(range_end)
-                );
+        );
 
         RandomIt it1 = vec_start.begin() + (vec_start.end() - vec_start.begin()) / 3;
         RandomIt it2 = it1 + (vec_start.end() - vec_start.begin()) / 3;
@@ -41,7 +29,7 @@ void MergeSort(RandomIt range_begin, RandomIt range_end) {
                 make_move_iterator(it1),
                 make_move_iterator(it2),
                 back_inserter(vec)
-                );
+        );
 
         MergeSort(it2, vec_start.end());
 

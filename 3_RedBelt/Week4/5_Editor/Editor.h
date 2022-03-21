@@ -1,45 +1,31 @@
-//
-// Created by cobak on 11.01.2022.
-//
-
 #ifndef TASK_5_EDITOR_H
 #define TASK_5_EDITOR_H
 
+#include <string>
+#include <list>
 
 class Editor {
 public:
-    // Реализуйте конструктор по умолчанию и объявленные методы
-    Editor() : editor(""), buffer(""), cursor(0) {}
+    Editor() : cursor(editor.end()) {}
 
-    void Left(){ if(cursor > 0) --cursor; }
-
-    void Right() { if (cursor < editor.size()) ++cursor; }
-
-    void Insert(char token) {
-        editor.insert(cursor, 1, token);
-        ++cursor;
-    }
-
-    void Cut(size_t tokens = 1) {
-        buffer = editor.substr(cursor, tokens);
-        editor.erase(cursor, tokens);
-    }
-
-    void Copy(size_t tokens = 1) { buffer = editor.substr(cursor, tokens); }
-
-    void Paste() {
-        editor.insert(cursor, buffer);
-        cursor += buffer.size();
-    }
-
-    string GetText() const { return editor; }
+    void Left();
+    void Right();
+    void Insert(char token);
+    void Cut(size_t tokens = 1);
+    void Copy(size_t tokens = 1);
+    void Paste();
+    std::string GetText() const;
 
 private:
+    using Iterator = std::list<char>::iterator;
+    std::list<char> editor;
+    std::list<char> buffer;
+    Iterator cursor;
 
-    std::string editor;
-    std::string buffer;
+    Iterator AdvanceCopy(size_t tokens);
+    Iterator AdvanceLeft(Iterator it, size_t n);
+    Iterator AdvanceRight(Iterator it, size_t n);
 
-    size_t cursor;
 };
 
 #endif //TASK_5_EDITOR_H

@@ -1,41 +1,29 @@
-//
-// Created by cobak on 11.01.2022.
-//
+#include "Stats.h"
 
-#include "stats.h"
+void PartStats::Add(std::string_view key){
+    const auto iter = keys_count_.find(key);
+    if(iter != keys_count_.end()){
+        ++iter->second;
+    } else {
+        ++keys_count_[default_key_];
+    }
+}
 
 void Stats::AddMethod(string_view method){
-    if(method == "GET") ++methods["GET"];
-    else if(method == "PUT") ++methods["PUT"];
-    else if(method == "POST") ++methods["POST"];
-    else if(method == "DELETE")++methods["DELETE"];
-    else ++methods["UNKNOWN"];
+    methods.Add(method);
 }
 
 void Stats::AddUri(string_view uri) {
-    if(uri == "/") ++URLs["/"];
-    else if(uri == "/order") ++URLs["/order"];
-    else if(uri == "/product") ++URLs["/product"];
-    else if(uri == "/basket") ++URLs["/basket"];
-    else if(uri == "/help") ++URLs["/help"];
-    else ++URLs["unknown"];
+    uris.Add(uri);
 }
 
-HttpRequest ParseRequest(string_view line){
-    line.remove_prefix(std::min(line.find_first_not_of(' '), line.size()));
-    HttpRequest req;
+const std::map<std::string_view, int>& PartStats::Get() const{
+    return keys_count_;
+}
 
-    auto space = line.find(' ', 0);
-    req.method = line.substr(0, space);
-    line.remove_prefix(space + 1);
-
-    space = line.find(' ', 0);
-    req.uri = line.substr(0, space);
-    line.remove_prefix(space + 1);
-
-    space = line.find(' ', 0);
-    req.protocol = line.substr(0, space);
-    line.remove_prefix(space + 1);
-
-    return req;
+const map<string_view, int>& Stats::GetMethodStats() const {
+    return methods.Get();
+}
+const map<string_view, int>& Stats::GetUriStats() const {
+    return uris.Get();
 }

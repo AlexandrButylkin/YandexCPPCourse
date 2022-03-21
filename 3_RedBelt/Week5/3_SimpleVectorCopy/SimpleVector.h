@@ -1,5 +1,5 @@
-#ifndef TASK_5_SIMPLEVECTOR_H
-#define TASK_5_SIMPLEVECTOR_H
+#ifndef TASK_3_SIMPLEVECTOR_H
+#define TASK_3_SIMPLEVECTOR_H
 
 #include <iostream>
 
@@ -16,25 +16,11 @@ public:
         std::copy(vector.begin(), vector.end(), data_);
     }
 
-    SimpleVector(SimpleVector&& vector) noexcept :
-            data_(vector.begin_),
-            capacity_(vector.capacity_),
-            size_(vector.size_){
-        vector.begin_ = nullptr;
-        vector.capacity_ = 0;
-        vector.size_ = 0;
-    }
-
-    SimpleVector<T>& operator=(const SimpleVector& vector) {
+    SimpleVector<T>& operator=(const SimpleVector<T>& vector) {
         SimpleVector tmp(vector);
         std::swap(data_, tmp.data_);
         std::swap(size_, tmp.size_);
         std::swap(capacity_, tmp.capacity_);
-        return *this;
-    }
-
-    SimpleVector<T>& operator=(SimpleVector&& vector) noexcept {
-        std::swap(*this, vector);
         return *this;
     }
 
@@ -67,18 +53,6 @@ public:
         data_[size_++] = value;
     }
 
-    void PushBack(T&& value){
-        if(size_ == capacity_){
-            size_t new_capacity = capacity_ * 2 + 1;
-            auto new_vector = new T[new_capacity];
-            std::move(begin(), end(), new_vector);
-            delete[] data_;
-            data_ = new_vector;
-            capacity_ = new_capacity;
-        }
-        data_[size_++] = std::move(value);
-    }
-
     ~SimpleVector(){ delete[] data_; }
 
 private:
@@ -87,5 +61,4 @@ private:
     size_t size_ = 0;
 };
 
-
-#endif //TASK_5_SIMPLEVECTOR_H
+#endif //TASK_3_SIMPLEVECTOR_H

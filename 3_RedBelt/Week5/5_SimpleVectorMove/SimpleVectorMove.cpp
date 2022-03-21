@@ -1,5 +1,5 @@
-#include "simple_vector_2.h"
-#include "test_runner.h"
+#include "SimpleVector.h"
+#include "../../Utils/TestRunner.h"
 
 #include <algorithm>
 #include <iostream>

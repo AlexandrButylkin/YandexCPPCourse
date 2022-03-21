@@ -1,56 +1,33 @@
-#include "test_runner.h"
+#include "../../Utils/TestRunner.h"
 
-#include <cstdint>
-#include <iterator>
+#include <list>
 #include <numeric>
 #include <vector>
-#include <list>
-#include <iostream>
 
 using namespace std;
+
+template <typename C, typename ForwardIt>
+ForwardIt Loop(C& container, ForwardIt pos){
+    return pos == container.end() ? container.begin() : pos;
+}
+
 
 template <typename RandomIt>
 void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
     list<typename RandomIt::value_type> pool;
-    auto it = first;
-    while(it != last){
+    for(auto it = first; it != last; ++it){
         pool.push_back(std::move(*it));
-        it++;
     }
 
-
-    auto iter = pool.begin();
-    size_t cur_pos = 0;
-
+    auto curr_pos = pool.begin();
     while(!pool.empty()){
-        *first = std::move(*iter);
-        first++;
-        /*if(pool.size() == 1) {
-            pool.clear();
-            break;
-        }*/
-        iter = pool.erase(iter);
-
+        *(first++) = std::move(*curr_pos);
+        curr_pos = pool.erase(curr_pos);
+        curr_pos = Loop(pool, curr_pos);
         for(int i = 0; i < step_size - 1; ++i){
-            if(iter == pool.end()){
-                iter = std::next(iter);
-            }
-            iter = std::next(iter);
-            if(iter == pool.end()){
-                iter = std::next(iter);
-            }
+            curr_pos = Loop(pool, ++curr_pos);
         }
     }
-
-    /*while (!pool.empty()) {
-        *first = pool[cur_pos];//*(first++) <=> *first \n first++
-        first++;
-        pool.erase(pool.begin() + cur_pos);
-        if (pool.empty()) {
-            break;
-        }
-        cur_pos = (cur_pos + step_size - 1) % pool.size();
-    }*/
 }
 
 vector<int> MakeTestVector() {
@@ -72,12 +49,6 @@ void TestIntVector() {
         ASSERT_EQUAL(numbers_copy, vector<int>({0, 3, 6, 9, 4, 8, 5, 2, 7, 1}));
     }
 }
-
-// Это специальный тип, который поможет вам убедиться, что ваша реализация
-// функции MakeJosephusPermutation не выполняет копирование объектов.
-// Сейчас вы, возможно, не понимаете как он устроен, однако мы расскажем,
-// почему он устроен именно так, далее в блоке про move-семантику —
-// в видео «Некопируемые типы»
 
 struct NoncopyableInt {
     int value;
@@ -101,20 +72,20 @@ ostream& operator << (ostream& os, const NoncopyableInt& v) {
 
 void TestAvoidsCopying() {
     vector<NoncopyableInt> numbers;
-    numbers.push_back({1});
-    numbers.push_back({2});
-    numbers.push_back({3});
-    numbers.push_back({4});
-    numbers.push_back({5});
+    numbers.emplace_back(1);
+    numbers.emplace_back(2);
+    numbers.emplace_back(3);
+    numbers.emplace_back(4);
+    numbers.emplace_back(5);
 
     MakeJosephusPermutation(begin(numbers), end(numbers), 2);
 
     vector<NoncopyableInt> expected;
-    expected.push_back({1});
-    expected.push_back({3});
-    expected.push_back({5});
-    expected.push_back({4});
-    expected.push_back({2});
+    expected.emplace_back(1);
+    expected.emplace_back(3);
+    expected.emplace_back(5);
+    expected.emplace_back(4);
+    expected.emplace_back(2);
 
     ASSERT_EQUAL(numbers, expected);
 }
@@ -125,40 +96,3 @@ int main() {
     RUN_TEST(tr, TestAvoidsCopying);
     return 0;
 }
-
-
-/*#include <list>
-#include <cstdint>
-#include <iterator>
-#include <utility>
-
-using namespace std;
-
-
-// Вспомогательная функция, позволяющая «зациклить» список
-template <typename Container, typename ForwardIt>
-ForwardIt LoopIterator(Container& container, ForwardIt pos) {
-    return pos == container.end() ? container.begin() : pos;
-}
-
-template <typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last,
-                             uint32_t step_size) {
-    list<typename RandomIt::value_type> pool;
-    for (auto it = first; it != last; ++it) {
-        pool.push_back(move(*it));
-    }
-    auto cur_pos = pool.begin();
-    while (!pool.empty()) {
-        *(first++) = move(*cur_pos);
-        if (pool.size() == 1) {
-            break;
-        }
-        const auto next_pos = LoopIterator(pool, next(cur_pos));
-        pool.erase(cur_pos);
-        cur_pos = next_pos;
-        for (uint32_t step_index = 1; step_index < step_size; ++step_index) {
-            cur_pos = LoopIterator(pool, next(cur_pos));
-        }
-    }
-}*/
