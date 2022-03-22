@@ -7,12 +7,6 @@
 #include <unordered_map>
 #include <vector>
 
-struct Stats {
-    size_t docid_count = 0;
-    size_t sort = 0;
-    size_t out = 0;
-};
-
 class InvertedIndex {
 public:
     void Add(std::string document);

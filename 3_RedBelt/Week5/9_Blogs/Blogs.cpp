@@ -1,68 +1,25 @@
-#include "test_runner.h"
-#include "C:\Users\cobak\CLionProjects\red_belt\profiler\MyProfiler.h"
+#include "../../Utils/TestRunner.h"
+#include "../../Utils/Profiller.h"
+#include "Paginator.h"
+
 #include <execution>
 
 #include <map>
-#include <string>
 #include <functional>
 #include <future>
 #include <iterator>
 using namespace std;
 
-template <typename T>
-class Page{
-private:
-    T begin_;
-    T end_;
-public:
-    Page(T vBegin, T vEnd) : begin_(std::move(vBegin)), end_(std::move(vEnd)) {}
-
-    T begin() const {return  begin_;}
-    T end() const {return end_;}
-
-    [[nodiscard]] size_t size() const {return std::distance(begin_, end_);}
-
-};
-
-template <typename Iterator>
-class Paginator {
-private:
-    std::vector<Page<Iterator>> pages;
-public:
-    Paginator(Iterator begin, Iterator end, size_t page_size) {
-        while(begin != end){
-            pages.emplace_back(begin, std::next(begin, std::min(page_size, static_cast<size_t>(std::distance(begin, end)))));
-            begin = std::next(begin, std::min(page_size, static_cast<size_t>(std::distance(begin, end))));
-        }
-    }
-
-    auto begin() const {return pages.begin();}
-    auto end() const {return pages.end();}
-
-    [[nodiscard]] size_t size() const {return pages.size();}
-};
-
-template <typename C>
-auto Paginate(C& c, size_t page_size){
-    return Paginator(c.begin(), c.end(), page_size);
-}
-
-
 struct Stats {
     map<string, int> word_frequences;
 
-    void operator += (const Stats& other){
-        for(auto& item : other.word_frequences){
-            word_frequences[item.first] += item.second;
+    void operator+= (const Stats& other){
+        for(auto& [word, freq] : other.word_frequences){
+            word_frequences[word] += freq;
         }
     }
 };
 
-std::vector<std::string> Split(istream& input){
-
-}
-
-using Iterator = std::vector<std::string>::iterator;
 template <typename T>
 Stats ExploreKeyWordSingleThread(const set<string>& key_words, T& container){
     Stats res;
@@ -73,16 +30,14 @@ Stats ExploreKeyWordSingleThread(const set<string>& key_words, T& container){
     }
 
     return res;
-
 }
 
 Stats ExploreKeyWords(const set<string>& key_words, istream& input) {
 
-    const size_t num_threads = 1;
+    const size_t num_threads = 4;
 
     std::vector<std::string> strings((
-            istream_iterator<std::string>(input)),istream_iterator<std::string>()
-                                             );
+                                             istream_iterator<std::string>(input)),istream_iterator<std::string>());
     Stats res;
     std::vector<std::future<Stats>> futures;
     futures.reserve(num_threads);
@@ -121,24 +76,7 @@ void f(std::vector<int>::iterator a, int i){
 }
 
 int main() {
-    //TestRunner tr;
-    //RUN_TEST(tr, TestBasic);
-    {LOG_DURATION("Test Single");
-        std::vector<int> a(10000000);
-        int i = 0;
-        for_each(std::execution::seq, a.begin(), a.end(), [&i](int& n){
-            n = i;
-            ++i; });
-        sort(std::execution::seq, a.rbegin(), a.rend());
-    }
-    {LOG_DURATION("Test Multi");
-        std::vector<int> a(10000000);
-        int i = 0;
-        for_each(std::execution::par, a.begin(), a.end(), [&i](int& n){
-            n = i;
-            ++i; });
-        sort(std::execution::par, a.rbegin(), a.rend());
-    }
-
+    TestRunner tr;
+    RUN_TEST(tr, TestBasic);
     return 0;
 }

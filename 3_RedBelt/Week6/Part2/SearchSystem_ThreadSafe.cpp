@@ -1,7 +1,6 @@
 #include "search_server.h"
-#include "parse.h"
-#include "test_runner.h"
-//#include "MyProfiler.h"
+#include "Parse.h"
+#include "../../Utils/TestRunner.h"
 
 #include <iterator>
 #include <vector>
@@ -198,43 +197,6 @@ void TestBasicSearch() {
     TestFunctionality(docs, queries, expected);
 }
 
-/*void MyTest() {
-
-        vector<string> docs;
-        docs.reserve(50000);
-        for (size_t i = 0; i < 50000; ++i) {
-            docs.emplace_back(
-                    "just like exception safety is not about writing try catch everywhere in your code move semantics are not about typing double ampersand everywhere in your code");
-        }
-
-        vector<string> queries;
-        queries.reserve(50000);
-        for (size_t i = 0; i < 100; ++i) {
-            queries.emplace_back("just like exception safety");
-        }
-
-
-        istringstream docs_input(Join('\n', docs));
-        istringstream queries_input(Join('\n', queries));
-
-        SearchServer srv;
-        {
-            //LogDuration LD;
-            srv.UpdateDocumentBase(docs_input);
-            //std::cerr << "ADD = " << LD.GetTime() << std::endl;
-        }
-        {
-            //LogDuration LD;
-            ostringstream queries_output;
-            srv.AddQueriesStream(queries_input, cout);
-            //std::cerr << "FIND = " << LD.GetTime() << std::endl;
-        }
-        //std::cerr << std::endl;
-        //std::cerr << "DOCIDCOUNT = " << a.docid_count << std::endl;
-        //std::cerr << "SORT = " << a.sort << std::endl;
-        //std::cerr << "OUT = " << a.out << std::endl;
-    //}
-}*/
 
 int main() {
     TestRunner tr;
@@ -243,5 +205,4 @@ int main() {
     RUN_TEST(tr, TestHitcount);
     RUN_TEST(tr, TestRanking);
     RUN_TEST(tr, TestBasicSearch);
-    //RUN_TEST(tr, MyTest);
 }
