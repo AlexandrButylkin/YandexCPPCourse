@@ -1,7 +1,6 @@
-#include "geo2d.h"
+#include "Geo2d.h"
 
 #include <algorithm>
-#include <cmath>
 
 namespace geo2d {
 
@@ -18,7 +17,7 @@ namespace geo2d {
 
     template <typename T>
     T Sign(T x) {
-        return x != 0 ? x / abs(x) : 0;
+        return x != 0 ? x / std::abs(x) : 0;
     }
 
     uint64_t DistanceSquared(Point p1, Point p2) {
@@ -60,9 +59,6 @@ namespace geo2d {
     bool Collide(Point p, Circle c) {
         return DistanceSquared(p, c.center) <= Sqr<uint64_t>(c.radius);
     }
-
-    bool Collide(Segment s1, Segment s2);
-    bool Collide(Circle c, Segment s);
 
     bool Collide(Rectangle r, Point p) { return Collide(p, r); }
     bool Collide(Rectangle r, Segment s) {
@@ -115,15 +111,8 @@ namespace geo2d {
                 ScalarProduct(Vector{s.p1, s.p2}, Vector{s.p1, c.center}) >= 0 &&
                 ScalarProduct(Vector{s.p2, s.p1}, Vector{s.p2, c.center}) >= 0
                 ) {
-            // Высота треугольника (s.p1, s.p2, c.center), проведённая из c.center,
-            // попадает на отрезок (s.p1, s.p2).
 
-            // Удвоенная площадь треугольника (s.p1, s.p2, c.center) равна модулю
-            // векторного произведения ниже, обозначим её 2S. Высота этого треугольника,
-            // проведённая из c.center, равна 2S / |s.p1, s.p2|. Чтобы остаться в целых
-            // числах, возведём сравниваемые величины в квадрат и сравним (2S)^ 2 с
-            // R^2 * |s.p1, s.p2|^2
-            uint64_t double_triangle_square = abs(Vector{s.p1, s.p2} * Vector{s.p1, c.center});
+            uint64_t double_triangle_square = std::abs(Vector{s.p1, s.p2} * Vector{s.p1, c.center});
             return Sqr(double_triangle_square) <= Sqr<uint64_t>(c.radius) * DistanceSquared(s.p1, s.p2);
         } else {
             auto d = std::min(DistanceSquared(c.center, s.p1), DistanceSquared(c.center, s.p2));

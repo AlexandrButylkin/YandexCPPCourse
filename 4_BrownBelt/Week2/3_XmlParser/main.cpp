@@ -1,9 +1,8 @@
 #include "xml.h"
-#include "test_runner.h"
+#include "../../Utils/TestRunner.h"
 
 #include <algorithm>
 #include <iostream>
-#include <sstream>
 #include <vector>
 using namespace std;
 
@@ -42,14 +41,14 @@ string MostExpensiveCategory(
 }
 
 vector<Spending> LoadFromXml(istream& input) {
-    auto spendings = Load(input).GetRoot().Children();
+    auto doc = Xml::Load(input).GetRoot().Children();
     std::vector<Spending> res;
-    res.reserve(spendings.size());
+    res.reserve(doc.size());
 
-    for(const auto& item : spendings){
+    for(const auto& item : doc){
         res.emplace_back(Spending{
-            item.AttributeValue<string>("category"),
-            item.AttributeValue<int>("amount")});
+                item.AttributeValue<string>("category"),
+                item.AttributeValue<int>("amount")});
     }
 
     return res;
@@ -79,13 +78,12 @@ void TestLoadFromXml() {
 }
 
 void TestXmlLibrary() {
-    // Тест демонстрирует, как пользоваться библиотекой из файла xml.h
-
     istringstream xml_input(R"(<july>
     <spend amount="2500" category="food"></spend>
     <spend amount="23740" category="travel"></spend>
     <spend amount="12000" category="sport"></spend>
   </july>)");
+    using namespace Xml;
 
     Document doc = Load(xml_input);
     const Node& root = doc.GetRoot();

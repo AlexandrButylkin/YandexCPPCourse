@@ -1,7 +1,3 @@
-//
-// Created by cobak on 19.01.2022.
-//
-
 #ifndef TASK_1_INI__INI_H
 #define TASK_1_INI__INI_H
 
@@ -10,27 +6,21 @@
 #include <sstream>
 #include <exception>
 
-using std::string;
-using std::string_view;
-using std::unordered_map;
-using std::istream;
-using std::istringstream;
-
 namespace Ini {
 
-    using Section = unordered_map<string, string>;
+    using Section = std::unordered_map<std::string, std::string>;
 
     class Document {
     public:
-        Section& AddSection(string name);
-        const Section& GetSection(const string& name) const;
+        Section& AddSection(std::string name);
+        const Section& GetSection(const std::string& name) const;
         size_t SectionCount() const;
 
     private:
-        unordered_map<string, Section> sections;
+        std::unordered_map<std::string, Section> sections;
     };
 
-    Document Load(istream& input);
+    Document Load(std::istream& input);
 
 }
 

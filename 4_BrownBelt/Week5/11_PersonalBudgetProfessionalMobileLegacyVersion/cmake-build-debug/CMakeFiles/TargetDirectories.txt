@@ -1,3 +1,0 @@
-C:/Users/cobak/CLionProjects/YandexCPlusPlus/brown_belt/week_5/task_10(PersonalBudgetProfessionalMobileLegacyVersion)/cmake-build-debug/CMakeFiles/task_10_PersonalBudgetProfessionalMobileLegacyVersion_.dir
-C:/Users/cobak/CLionProjects/YandexCPlusPlus/brown_belt/week_5/task_10(PersonalBudgetProfessionalMobileLegacyVersion)/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/cobak/CLionProjects/YandexCPlusPlus/brown_belt/week_5/task_10(PersonalBudgetProfessionalMobileLegacyVersion)/cmake-build-debug/CMakeFiles/rebuild_cache.dir

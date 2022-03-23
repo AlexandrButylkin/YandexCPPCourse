@@ -1,5 +1,5 @@
-#include "stats_aggregator.h"
-#include "test_runner.h"
+#include "StatsAggregator.h"
+#include "../../Utils/TestRunner.h"
 
 #include <sstream>
 using namespace std;

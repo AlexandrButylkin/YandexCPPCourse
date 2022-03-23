@@ -1,4 +1,4 @@
-#include "stats_aggregator.h"
+#include "StatsAggregator.h"
 
 using namespace std;
 

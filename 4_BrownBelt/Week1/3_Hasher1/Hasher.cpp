@@ -1,4 +1,4 @@
-#include "test_runner.h"
+#include "../../Utils/TestRunner.h"
 #include <limits>
 #include <random>
 #include <unordered_set>
@@ -23,12 +23,11 @@ struct Hasher {
         size_t y_hash = coordHash(p.y);
         size_t z_hash = coordHash(p.z);
 
-        //A*x*x + B*x + C
-        return (x_hash * 3571 * 3571 + y_hash * 3571 + z_hash);
+        return (x_hash * CONST * CONST + y_hash * CONST + z_hash);
 
 
     }
-
+    const size_t CONST = 1'354'828;
     std::hash<CoordType> coordHash;
 };
 
@@ -137,14 +136,8 @@ void TestDistribution() {
     );
 
     Hasher hasher;
-
-    // выбираем число бакетов не очень большим простым числом
-    // (unordered_set, unordered_map используют простые числа бакетов
-    // в реализациях GCC и Clang, для непростых чисел бакетов
-    // возникают сложности со стандартной хеш-функцией в этих реализациях)
     const size_t num_buckets = 2053;
 
-    // мы хотим, чтобы число точек в бакетах было ~100'000
     const size_t perfect_bucket_size = 50;
     const size_t num_points = num_buckets * perfect_bucket_size;
     vector<size_t> buckets(num_buckets);
@@ -154,28 +147,12 @@ void TestDistribution() {
     }
 
     // Статистика Пирсона:
-    // https://en.wikipedia.org/wiki/Pearson's_chi-squared_test
-    //
-    // Численной мерой равномерности распределения также может выступать
-    // энтропия, но для ее порогов нет хорошей статистической интерпретации
     double pearson_stat = 0;
     for (auto bucket_count: buckets) {
         size_t count_diff = bucket_count - perfect_bucket_size;
         pearson_stat +=
                 count_diff * count_diff / static_cast<double>(perfect_bucket_size);
     }
-
-    // проверяем равномерность распределения методом согласия Пирсона
-    // со статистической значимостью 0.95:
-    //
-    // если подставить вместо ++buckets[hasher(point) % num_buckets]
-    // выражение ++buckets[dist(gen) % num_buckets], то с вероятностью 95%
-    // ASSERT ниже отработает успешно,
-    //
-    // т.к. статистика Пирсона приблизительно распределена по chi^2
-    // с числом степеней свободы, равным num_buckets - 1,
-    // и 95 процентиль этого распределения равен:
-    // >>> scipy.stats.chi2.ppf(0.95, 2052)
     const double critical_value = 2158.4981036918693;
     ASSERT(pearson_stat < critical_value);
 }

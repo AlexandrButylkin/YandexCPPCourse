@@ -1,5 +1,4 @@
-#include "test_runner.h"
-
+#include "../../Utils/TestRunner.h"
 #include "ini.h"
 
 #include <sstream>
@@ -50,9 +49,6 @@ void TestDocument() {
     Ini::Document doc;
     ASSERT_EQUAL(doc.SectionCount(), 0u);
 
-    // Обратите внимание, как мы используем указатель для работы
-    // с последней добавленной секцией. Эта техника может вам пригодиться
-    // для реализации функции Load
     Ini::Section *section = &doc.AddSection("one");
     ASSERT_EQUAL(doc.SectionCount(), 1u);
 
@@ -117,6 +113,5 @@ int main() {
     RUN_TEST(tr, TestDocument);
     RUN_TEST(tr, TestUnknownSection);
     RUN_TEST(tr, TestDuplicateSections);
-
     return 0;
 }

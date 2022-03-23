@@ -1,16 +1,12 @@
-#include "test_runner.h"
-#include "stats_aggregator.h"
+#include "../../Utils/TestRunner.h"
+#include "StatsAggregator.h"
 
-#include <vector>
 #include <string>
-#include <map>
 #include <memory>
 #include <iostream>
 #include <unordered_map>
 #include <functional>
 using namespace std;
-
-void TestAll();
 
 unique_ptr<StatsAggregator> ReadAggregators(istream& input) {
     using namespace StatsAggregators;
@@ -58,6 +54,7 @@ int main() {
     for (int value; cin >> value; ) {
         stats_aggregator->Process(value);
     }
+
     stats_aggregator->PrintValue(cout);
 
     return 0;

@@ -1,9 +1,8 @@
 #include "json.h"
-#include "test_runner.h"
+#include "../../Utils/TestRunner.h"
 
 #include <algorithm>
 #include <iostream>
-#include <sstream>
 #include <vector>
 using namespace std;
 
@@ -42,14 +41,14 @@ string MostExpensiveCategory(
 }
 
 vector<Spending> LoadFromJson(istream& input) {
-    auto spendings = Load(input).GetRoot().AsArray();
+    auto doc = Json::Load(input);
     std::vector<Spending> res;
-    res.reserve(spendings.size());
+    res.reserve(doc.GetRoot().AsArray().size());
 
-    for(const auto& item : spendings){
+    for(const auto& item : doc.GetRoot().AsArray()){
         res.emplace_back(Spending{
-            item.AsMap().at("category").AsString(),
-            item.AsMap().at("amount").AsInt()});
+                item.AsMap().at("category").AsString(),
+                item.AsMap().at("amount").AsInt()});
     }
 
     return res;
@@ -79,14 +78,13 @@ void TestLoadFromJson() {
 }
 
 void TestJsonLibrary() {
-    // Тест демонстрирует, как пользоваться библиотекой из файла json.h
 
     istringstream json_input(R"([
     {"amount": 2500, "category": "food"},
     {"amount": 1150, "category": "transport"},
     {"amount": 12000, "category": "sport"}
   ])");
-
+    using namespace Json;
     Document doc = Load(json_input);
     const vector<Node>& root = doc.GetRoot().AsArray();
     ASSERT_EQUAL(root.size(), 3u);
