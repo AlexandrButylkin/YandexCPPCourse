@@ -2,6 +2,8 @@
 #define TASK_10_CONCURRENTMAP_H
 
 #include <mutex>
+#include <map>
+#include <vector>
 
 template<typename K, typename V>
 class ConcurrentMap {
